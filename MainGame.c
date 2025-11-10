@@ -1,5 +1,5 @@
 //*****************************************LIBRERIE**********************************************
-#include <stdio.h> 
+#include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
@@ -102,23 +102,26 @@ char menuPrincipale(bool sblocco) // sblocco = se vero viene visualizzata l'opzi
 //************************************** MAIN *********************************************
 int main(void)
 {
-    // crea menu principale e fa selezionare l'azione da compiere
-    char scelta = menuPrincipale(false); // false: non ha sbloccato i trucchi di default
-    printf("scelta: %c\n", scelta);
-
-    // compie l'azione selezionata
-    switch (scelta)
+    while (true)
     {
-    case '1':
-        printf("1\n");
-        break;
+        // crea menu principale e fa selezionare l'azione da compiere
+        char scelta = menuPrincipale(false); // false: non ha sbloccato i trucchi di default
+        printf("scelta: %c\n", scelta);
 
-    case '2':
-        printf("2\n");
-        break;
+        // compie l'azione selezionata
+        switch (scelta)
+        {
+        case '1':
+            printf("1\n");
+            break;
 
-    case '3':
-        printf("3\n");
-        break;
+        case '2':
+            printf("2\n");
+            break;
+
+        case '3':
+            printf("3\n");
+            break;
+        }
     }
 }
