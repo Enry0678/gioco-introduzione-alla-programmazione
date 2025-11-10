@@ -35,7 +35,7 @@ bool sbloccoTrucchi()
 // funzione che crea il menu principale e gestisce l'input della selezione -> funzione ricorsiva :)
 char menuPrincipale(bool sblocco) // sblocco = se vero viene visualizzata l'opzione trucchi altrimenti no
 {
-    system("cls || clear");
+    system("cls || clear"); //cancella tutta la console per poi stampare tutto il menu
     char scelta;
     bool sbloccoLocale = false; //utilizzato per determinare se sbloccare i trucchi o no
     printf("Menu Principale:\n\n");
