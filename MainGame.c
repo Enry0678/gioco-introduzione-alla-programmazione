@@ -4,6 +4,56 @@
 #include <stdlib.h>
 #include <string.h>
 
+// *****************************************STRUTTURE DATI*****************************************
+
+struct Player
+{
+    int vita; // massimo 20
+    int monete;
+    /*
+    gli oggetti sono:
+     - [0] pozione curativa
+     - [1] spada / spada dell'eroe (nello stesso slot)
+     - [2] armatura
+     - [3] chiave del castello del signore oscuro
+    */
+    int oggetti[4];
+};
+
+struct Missione
+{
+    bool completata; // segna se la missione è completata
+    int tipo;        // segna il tipo della missione: 0 = palude putrescente, 1 = magione infestata, 2 = grotta di cristallo
+    int stanze[10];  // stanze della missione (da generare proceduralmente)
+};
+
+struct Partita
+{
+    struct Player giocatore;
+    struct Missione palude_putrescente;
+    struct Missione magione_infestata;
+    struct Missione grotta_di_cristallo;
+    // la missione finale viene gestita in modo diverso (sasso, carta, forbice)
+};
+
+// *****************************************VARIABILI GLOBALI*****************************************
+// variabili globali per i mob e trappole dove in ordine abbiamo : 1."nome entità " , 2."tipologia dell'entità" 0=fight 1=trap , 3."danno che one shotta l'entità", 4."danno dell'entità", 5."Monete ottenute alla sconfitta"
+
+// mostri e trappole per la prima missione
+const char *entita_missione_1[6][5] = {
+    {"Cane Selvaggio", "0", "2", "1", "0"},
+    {"Goblin", "0", "3", "2", "2"},
+    {"Scheletro", "0", "4", "2", "4"},
+    {"Orco", "0", "3", "4", "6"},
+    {"Acquitrino Velenoso", "1", "0", "d", "0"},
+    {"Generale Orco", "0", "6", "3", "12"},
+};
+
+// mostri e trappole per la seconda missione
+const char *entita_missione_2[6][5] = {{"Botola Buia", "1", "0", "3", "0"}, {"Pipistrello", "0", "3", "1"}, {"Zombie", "0", "3", "2", "2"}, {"Fantasma", "5", "2", "4", "4"}, {"Vampiro Superiore", "0", "4", "4", "7"}, {"Demone Custode", "0", "4", "6", "10"}};
+
+// mostri e trappole per la terza missione
+const char *entita_missione_3[6][5] = {{"Stanza Vuota", "2", "0", "0", "0"}, {"Cristalli Cadenti", "1", "0", "2", "0"}, {"Ponte Pericolante", "1", "0", "0", "-3"}, {"Forziere Misterioso", "1", "0", "2", "10"}, {"Rupe Scoscesa", "1", "0", "d", "0"}, {"Drago Antico", "0", "5", "10", "12"}};
 //**************************************SBLOCCO TRUCCHI******************************************
 // codice Konami: w w s s a d a d b a [Spazio]
 bool sbloccoTrucchi()
@@ -98,10 +148,70 @@ char menuPrincipale(bool sblocco) // sblocco = se vero viene visualizzata l'opzi
 
     return scelta[0];
 }
+//*************************************MENU DEL VILLAGGIO*******************************************
+int menuVillaggio()
+{
+    system("cls || clear"); // cancella tutta la console per poi stampare tutto il menu
+
+    printf("Menu del villaggio:\n\n"); // print del menu del villaggio
+        printf("\t1. Intraprendi una missione\n");
+        printf("\t2. Riposati\n");
+        printf("\t3. Inventario\n");
+        printf("\t4. Salva la partita\n");
+        printf("\t5. Esci\n\n");
+    int opzione;
+    bool valido = false;
+    do
+    {
+        valido = false;
+        printf("Seleziona una delle opzioni del menu [1-5]: ");
+        scanf("%d", &opzione);
+        if (opzione < 1 || opzione > 5)
+        {
+            printf("OPZIONE NON VALIDA\n");
+            valido = true;
+        }
+    } while (valido);
+
+    return opzione;
+}
+
+//*************************************CREA STANZE*******************************************
+
+void creaStanze(int tipo)
+{
+
+    // genera il contenuto stanze in base al tipo
+}
+
+//*************************************NUOVA PARTITA*******************************************
+struct Partita nuovaPartita()
+{
+    // inizializzazione della partita
+    struct Partita partita =
+        {
+            // inizializzazione del giocatore
+            .giocatore = {
+                .vita = 20,
+                .monete = 0,
+                .oggetti = {0}},
+
+            // inizializzazione della prima missione
+            .palude_putrescente = {.completata = false, .tipo = 0, .stanze = {-1}},
+
+            // inizializzazione della seconda missione
+            .magione_infestata = {.completata = false, .tipo = 1, .stanze = {-1}},
+
+            // inizializzazione della terza missione
+            .grotta_di_cristallo = {.completata = false, .tipo = 2, .stanze = {-1}}};
+}
 
 //************************************** MAIN *********************************************
 int main(void)
 {
+
+    // VARIABILI
+
     while (true)
     {
         // crea menu principale e fa selezionare l'azione da compiere
@@ -111,17 +221,45 @@ int main(void)
         // compie l'azione selezionata
         switch (scelta)
         {
-        case '1':
+        case '1': // nuova partita
+            nuovaPartita();
             printf("1\n");
             break;
 
-        case '2':
+        case '2': // carica partita
             printf("2\n");
             break;
 
-        case '3':
+        case '3': // trucchi
             printf("3\n");
             break;
         }
+
+        int sceltaVillaggio = menuVillaggio();
+        
+        switch (sceltaVillaggio)
+        {
+        case 1: // intraprendi una missione
+            printf("Intraprende una missione\n");
+            break;
+
+        case 2: // riposati
+            printf("Si riposa\n");
+            break;
+
+        case 3: // inventario
+            printf("Apre inventario\n");
+            break;
+
+        case 4: // Salva Partita
+            printf("Salva la partita\n");
+        break;
+        
+        case 5: // esci
+            printf("Sei uscito\n");
+        break;
+        }
+        
+        scanf("%d", &sceltaVillaggio);
     }
 }
