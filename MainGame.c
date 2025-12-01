@@ -13,7 +13,7 @@ struct Player
     /*
     gli oggetti sono:
      - [0] pozione curativa
-     - [1] spada / spada dell'eroe (nello stesso slot)
+     - [1] spada / spada dell'eroe (nello stesso slot: spada = 1, spada dell'eroe = 2)
      - [2] armatura
      - [3] chiave del castello del signore oscuro
     */
@@ -154,11 +154,11 @@ int menuVillaggio()
     system("cls || clear"); // cancella tutta la console per poi stampare tutto il menu
 
     printf("Menu del villaggio:\n\n"); // print del menu del villaggio
-        printf("\t1. Intraprendi una missione\n");
-        printf("\t2. Riposati\n");
-        printf("\t3. Inventario\n");
-        printf("\t4. Salva la partita\n");
-        printf("\t5. Esci\n\n");
+    printf("\t1. Intraprendi una missione\n");
+    printf("\t2. Riposati\n");
+    printf("\t3. Inventario\n");
+    printf("\t4. Salva la partita\n");
+    printf("\t5. Esci\n\n");
     int opzione;
     bool valido = false;
     do
@@ -174,6 +174,41 @@ int menuVillaggio()
     } while (valido);
 
     return opzione;
+}
+//*************************************INVENTARIO*******************************************
+void visualizzaInventario(struct Partita partita)
+{
+    system("cls || clear"); // cancella tutta la console per poi stampare tutto il menu
+    printf("Inventario: \n");
+    printf("\t- vita:%d \n", partita.giocatore.vita);
+    printf("\t- monete: %d\n", partita.giocatore.monete);
+    printf("\t- pozioni curative: %d\n", partita.giocatore.oggetti[0]);
+    if (partita.giocatore.oggetti[1] == 1)
+    {
+        printf("\t- arma: spada\n");
+    }
+    else if (partita.giocatore.oggetti[1] == 2)
+    {
+        printf("\t- arma: spada dell'eroe\n");
+    }
+
+    if (partita.giocatore.oggetti[2] == 1)
+    {
+        printf("\t- armatura\n");
+    }
+
+    if (partita.giocatore.oggetti[3] == 1)
+    {
+        printf("\t- chiave del castello del signore oscuro\n");
+    }
+
+    int c;
+    //svuota il buffer per preparare il getchar()
+    while((c= getchar())!= '\n') {}
+    printf("Premi invio per continuare...");
+    getchar();
+    //svuota il buffer per evitare che non vengano utilizzati caratteri "non conformi"
+    while((c= getchar())!= '\n') {}
 }
 
 //*************************************CREA STANZE*******************************************
@@ -204,6 +239,8 @@ struct Partita nuovaPartita()
 
             // inizializzazione della terza missione
             .grotta_di_cristallo = {.completata = false, .tipo = 2, .stanze = {-1}}};
+
+    return partita;
 }
 
 //************************************** MAIN *********************************************
@@ -218,11 +255,13 @@ int main(void)
         char scelta = menuPrincipale(false); // false: non ha sbloccato i trucchi di default
         printf("scelta: %c\n", scelta);
 
+        // struttura che contiene la partita
+        struct Partita partita;
         // compie l'azione selezionata
         switch (scelta)
         {
         case '1': // nuova partita
-            nuovaPartita();
+            partita = nuovaPartita();
             printf("1\n");
             break;
 
@@ -235,31 +274,37 @@ int main(void)
             break;
         }
 
-        int sceltaVillaggio = menuVillaggio();
-        
-        switch (sceltaVillaggio)
+        int sceltaVillaggio;
+
+        while (true)
         {
-        case 1: // intraprendi una missione
-            printf("Intraprende una missione\n");
-            break;
+            sceltaVillaggio = menuVillaggio();
+            switch (sceltaVillaggio)
+            {
+            case 1: // intraprendi una missione
+                printf("Intraprende una missione\n");
+                break;
 
-        case 2: // riposati
-            printf("Si riposa\n");
-            break;
+            case 2: // riposati
+                printf("L'eroe si riposa\n");
+                printf("I punti vita sono stati ripristinati\n");
+                partita.giocatore.vita = 20;
+                break;
 
-        case 3: // inventario
-            printf("Apre inventario\n");
-            break;
+            case 3: // inventario
 
-        case 4: // Salva Partita
-            printf("Salva la partita\n");
-        break;
-        
-        case 5: // esci
-            printf("Sei uscito\n");
-        break;
+                printf("Apre inventario\n");
+                visualizzaInventario(partita);
+                break;
+
+            case 4: // Salva Partita
+                printf("Salva la partita\n");
+                break;
+
+            case 5: // esci
+                printf("Sei uscito\n");
+                break;
+            }
         }
-        
-        scanf("%d", &sceltaVillaggio);
     }
 }
