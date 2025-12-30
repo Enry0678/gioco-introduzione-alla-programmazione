@@ -26,6 +26,7 @@ struct Missione
 {
     bool completata; // segna se la missione è completata
     int tipo;        // segna il tipo della missione: 0 = palude putrescente, 1 = magione infestata, 2 = grotta di cristallo
+    int boss_sconfitti;
     int stanze[10];  // stanze della missione (da generare proceduralmente)
 };
 
@@ -39,14 +40,15 @@ struct Partita
 };
 
 //******************************************FUNZIONI************************************************
-bool sbloccoTrucchi();
 char menuPrincipale(bool sblocco);
-int menuVillaggio();
+short int menuVillaggio();
 void visualizzaInventario(struct Partita partita);
-//void creaStanze(int tipo);
+// void creaStanze(int tipo);
 struct Partita nuovaPartita();
+short int menuSelezioneMissione(struct Partita partita);
+short int menuMissione(short int selezioneMissione, struct Partita* partita);
 
-//variabili globali
+// variabili globali
 extern const char *entita_missione_1[6][5];
 extern const char *entita_missione_2[6][5];
 extern const char *entita_missione_3[6][5];

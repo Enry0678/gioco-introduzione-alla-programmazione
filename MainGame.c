@@ -11,6 +11,8 @@ int main(void)
 
     // VARIABILI
 
+    bool uscitaMenuVillaggio = false;
+
     while (true)
     {
         // crea menu principale e fa selezionare l'azione da compiere
@@ -38,13 +40,43 @@ int main(void)
 
         int sceltaVillaggio;
 
-        while (true)
+        uscitaMenuVillaggio = false;
+        while (!uscitaMenuVillaggio)
         {
             sceltaVillaggio = menuVillaggio();
             switch (sceltaVillaggio)
             {
             case 1: // intraprendi una missione
                 printf("Intraprende una missione\n");
+                short int selezioneMissione = menuSelezioneMissione(partita);
+                if(selezioneMissione == 4){
+                    //TODO
+                    //missioneFinale();
+                }
+                short int selezioneMenuMissione = 0;
+                while(selezioneMissione!=4){
+                    selezioneMenuMissione = menuMissione(selezioneMissione, &partita);
+                    switch(selezioneMenuMissione){
+                        case 1:
+                        
+                            break;
+                        case 2:
+
+                            break;
+                        case 3:
+
+                            break;
+                        case 4:
+                            if(partita.giocatore.monete<50){
+                                printf("Non hai abbastanza monete per ritirarti dalla missione\n");
+                            }
+
+                            break;
+                    }
+
+                }
+                
+
                 break;
 
             case 2: // riposati
@@ -63,8 +95,31 @@ int main(void)
                 printf("Salva la partita\n");
                 break;
 
-            case 5: // esci
-                printf("Sei uscito\n");
+            case 5: // esci con controllo si o no
+                printf("Stai uscendo dal gioco\n");
+                printf("Ricordati di salvare la partita per non perdere i tuoi progressi\n");
+                printf("Sei sicuro di voler procedere? [Y/N]: ");
+                char tmp = ' ';
+                do
+                {
+                    while ((tmp = getchar()) != '\n')
+                    {
+                    } // pulisci il buffer
+                    scanf("%c", &tmp);
+                    printf("tmp: %c\n", tmp);
+                } while (tmp != 'Y' && tmp != 'N' && tmp != 'y' && tmp != 'n'); // il si e no vengono visti come Y e N anche come y e n
+                if (tmp == 'y' || tmp == 'Y')
+                {
+                    while ((tmp = getchar()) != '\n')
+                    {
+                    } // pulisci il buffer prima di uscire
+                    printf("Uscita dal gioco...\n");
+                    uscitaMenuVillaggio = true;
+                }
+                else
+                {
+                    printf("Ritorno al menu del villaggio\n");
+                }
                 break;
             }
         }
