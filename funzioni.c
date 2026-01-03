@@ -19,6 +19,13 @@ const char *entita_missione_2[6][5] = {{"Botola Buia", "1", "0", "3", "0"}, {"Pi
 
 // mostri e trappole per la terza missione
 const char *entita_missione_3[6][5] = {{"Stanza Vuota", "2", "0", "0", "0"}, {"Cristalli Cadenti", "1", "0", "2", "0"}, {"Ponte Pericolante", "1", "0", "0", "-3"}, {"Forziere Misterioso", "1", "0", "2", "10"}, {"Rupe Scoscesa", "1", "0", "d", "0"}, {"Drago Antico", "0", "5", "10", "12"}};
+
+//**************************************TIRA DADO************************************************ 
+
+short int tiraDado(){
+    return (rand()%6)+1;
+}
+
 //**************************************SBLOCCO TRUCCHI******************************************
 // codice Konami: w w s s a d a d b a [Spazio]
 bool sbloccoTrucchi()
@@ -167,17 +174,38 @@ void visualizzaInventario(struct Partita partita)
         printf("\t- chiave del castello del signore oscuro\n");
     }
 
-    int c;
-    // svuota il buffer per preparare il getchar()
-    while ((c = getchar()) != '\n')
-    {
+    printf("\nAzioni disponibili:\n");
+    printf("\t1. Usa una pozione di cura\n");
+    printf("\t2. Esci dall'invetario\n");
+
+    int scelta;
+    do{
+        do
+        {
+            printf("\nSeleziona una delle opzioni[1,2]: ");
+            scanf("%d", &scelta);
+
+            if (scelta == 1 && partita.giocatore.oggetti[0] <= 0)
+            {
+                printf("Non hai pozioni curative\n");
+            }
+        } while ((scelta != 1 || partita.giocatore.oggetti[0] <= 0) && scelta != 2);
+
+        if (scelta == 1 && partita.giocatore.oggetti[0] > 0 && partita.giocatore.vita < 20)
+        {
+            partita.giocatore.vita += tiraDado();
+            
+            if(partita.giocatore.vita>20){
+                partita.giocatore.vita == 20;
+            }
+            partita.giocatore.oggetti[0]--;
+            printf("Hai usato una pozione curativa, la tua vita ora è: %d\n", partita.giocatore.vita);
+            printf("Adesso hai %d pozioni curative\n", partita.giocatore.oggetti[0]);
+            scanf("%d", &scelta);
+        }
     }
-    printf("Premi invio per continuare...");
-    getchar();
-    // svuota il buffer per evitare che non vengano utilizzati caratteri "non conformi"
-    while ((c = getchar()) != '\n')
-    {
-    }
+    while(scelta!=2);
+    
 }
 
 //*************************************CREA STANZE*******************************************
@@ -212,57 +240,90 @@ struct Partita nuovaPartita()
     return partita;
 }
 
-
 //*********************************MENU SELEZIONE MISSIONE*********************************************
 short int menuSelezioneMissione(struct Partita partita)
 {                           // menu per selezionare la missione
     system("cls || clear"); // cancella tutta la console per poi stampare tutto il menu
 
     printf("Menu di Selezione Missione:\n\n");
-    if (!(partita.palude_putrescente.completata) && !(partita.grotta_di_cristallo.completata) && !(partita.magione_infestata.completata))
+    if (!(partita.palude_putrescente.completata) || !(partita.grotta_di_cristallo.completata) || !(partita.magione_infestata.completata))
     {
         if (!partita.palude_putrescente.completata)
         {
             printf("\t1. Palude Putrescente\n");
         }
-        if (!partita.grotta_di_cristallo.completata)
+        if (!partita.magione_infestata.completata)
         {
             printf("\t2. Magione Infestata\n");
         }
-        if (!partita.magione_infestata.completata)
+        if (!partita.grotta_di_cristallo.completata)
         {
             printf("\t3. Grotta di Cristallo\n");
         }
         printf("\n");
         int scelta = 0;
-        printf("Seleziona una delle opzioni del menu [1-3]: ");
         do
         {
-            while ((scelta = getchar()) != '\n'){} // pulisci il buffer
+            printf("Seleziona una delle opzioni del menu [");
+            int primo = 1; // Flag per gestire le virgole
+
+            if (!partita.palude_putrescente.completata)
+            {
+                printf("1");
+                primo = 0;
+            }
+            if (!partita.magione_infestata.completata)
+            {
+                if (!primo)
+                {
+                    printf(",");
+                }
+                printf("2");
+                primo = 0;
+            }
+            if (!partita.grotta_di_cristallo.completata)
+            {
+                if (!primo)
+                {
+                    printf(",");
+                }
+                printf("3");
+            }
+
+            printf("]: ");
+
+            while ((scelta = getchar()) != '\n')
+            {
+            } // pulisci il buffer
             scanf("%d", &scelta);
-        } while (scelta!=1 && scelta!=2 && scelta!=3);
+        } while ((scelta != 1 || partita.palude_putrescente.completata) && (scelta != 2 || partita.magione_infestata.completata) && (scelta != 3 || partita.grotta_di_cristallo.completata));
         return scelta;
     }
     else
     {
         printf("\t4. Castello del Signore Oscuro\n\n");
-        printf("Hai completato tutte le missioni, digita INVIO per affrontare la missione finale");
+        printf("Hai completato tutte le missioni, digita INVIO per affrontare la missione finale\n");
         char c;
         // svuota il buffer per preparare il getchar()
-        while ((c = getchar()) != '\n'){}
+        while ((c = getchar()) != '\n')
+        {
+        }
         printf("Premi invio per continuare...");
 
-        ungetc('A', stdin); //inserisce nel buffer il valore "A" per permettere """l'invio istantaneo"""
-        getchar(); // aspetta l'invio
-        while ((c = getchar()) != '\n'){} //svuota il buffer per evitare dati indesiderati
+        ungetc('A', stdin); // inserisce nel buffer il valore "A" per permettere """l'invio istantaneo"""
+        getchar();          // aspetta l'invio
+        while ((c = getchar()) != '\n')
+        {
+        } // svuota il buffer per evitare dati indesiderati
     }
 }
 
 //*********************************MENU MISSIONE******************************************/
 
-short int menuMissione(short int selezioneMissione, struct Partita* partita){
+short int menuMissione(short int selezioneMissione, struct Partita *partita)
+{
     system("cls || clear"); // cancella tutta la console per poi stampare tutto il menu
-    struct Missione* missione;
+    struct Missione *missione;
     switch (selezioneMissione)
     {
     case 1:
@@ -270,24 +331,28 @@ short int menuMissione(short int selezioneMissione, struct Partita* partita){
         printf("OBIETTIVO:  Sconfiggi 3 Generale Orco del Signore Oscuro\n");
         printf("STATO DI AVANZAMENTO: Eliminati %d su 3 Generale Orco\n", partita->palude_putrescente.boss_sconfitti);
         break;
-    
+
     case 2:
         missione = &(partita->magione_infestata);
         printf("OBIETTIVO: Recuperare la chiave del Castello del Signore Oscuro, e sconfiggere un Vampiro Superiore.\n");
 
-        //creazione della stringa per lo stato di avanzamento
+        // creazione della stringa per lo stato di avanzamento
         char tmp[200] = "STATO DI AVANZAMENTO: ";
-        if(partita->giocatore.oggetti[3]!=0){
-            strcat(tmp, " -Chiave recuperata- "); //funzione per concatenare due stringhe (presente in string.h)
+        if (partita->giocatore.oggetti[3] != 0)
+        {
+            strcat(tmp, " -Chiave recuperata- "); // funzione per concatenare due stringhe (presente in string.h)
         }
-        else{
+        else
+        {
             strcat(tmp, " -Chiave non recuperata- ");
         }
-        
-        if(missione->boss_sconfitti>=1){
+
+        if (missione->boss_sconfitti >= 1)
+        {
             strcat(tmp, "-Vampiro superiore sconfitto-\n ");
         }
-        else{
+        else
+        {
             strcat(tmp, "-Vampiro superiore non sconfitto-\n ");
         }
         printf("%s\n", tmp);
@@ -295,12 +360,14 @@ short int menuMissione(short int selezioneMissione, struct Partita* partita){
     case 3:
         missione = &(partita->grotta_di_cristallo);
         printf("OBIETTIVO: Recuperare la spada dell'Eroe\n");
-        
+
         char tmp1[200] = "STATO DI AVANZAMENTO: ";
-        if(partita->giocatore.oggetti[1]==2){
+        if (partita->giocatore.oggetti[1] == 2)
+        {
             strcat(tmp1, "-Spada dell'Eroe recuperata- \n");
         }
-        else{
+        else
+        {
             strcat(tmp1, "-Spada dell'Eroe non recuperata- \n");
         }
         printf("%s\n", tmp1);
@@ -312,29 +379,45 @@ short int menuMissione(short int selezioneMissione, struct Partita* partita){
     printf("\t1. Esplora stanza del Dungeon\n");
     printf("\t2. Negozio\n");
     printf("\t3. Inventario\n");
-    if(missione->completata){
+    if (missione->completata)
+    {
         printf("\t4. Torna al villaggio\n\n");
     }
-    else{
+    else
+    {
         printf("\t4. Torna al villaggio (Paga 50 monete)\n\n");
     }
 
-    short int selezione=0;
-    do{
+    short int selezione = 0;
+    bool hasCoins; // determina se il giocatore ha le monete necessarie per tornare al villaggio
+    do
+    {
+        hasCoins = false;
         printf("Seleziona un opzione del menu [1-4]: ");
         scanf("%hd", &selezione);
-    }while((selezione<1 || selezione>4));
 
-    //controlla che il giocatore abbia le monete per uscire
-    while(selezione==4 && partita->giocatore.monete<50){
-        printf("\nNon hai abbastanza monete per ritirarti dalla missione, seleziona un'altra opzione\n");
+        // controlla che il giocatore abbia le monete necessarie per uscire in caso non abbia completato la missione
+        if (selezione == 4 && partita->giocatore.monete < 50 && !missione->completata)
+        {
+            printf("\nNon hai abbastanza monete per ritirarti dalla missione, seleziona un'altra opzione\n");
+            hasCoins = false;
+        }
+        else if (selezione == 4 && partita->giocatore.monete >= 50 && !missione->completata)
+        {
+            partita->giocatore.monete -= 50;
+            missione->completata = true;
+            return 4;
+        }
+        else if (selezione == 4 && missione->completata)
+        {
+            return 4;
+        }
+        else
+        {
+            hasCoins = true; // in caso che venga scelta un opzione diversa da 4
+        }
 
-        //se non ha le monete fa scegliere di nuovo all'utente un opzione
-        do{
-        printf("Seleziona un opzione del menu [1-4]: ");
-        scanf("%hd", &selezione);
-        }while((selezione<1 || selezione>4));
-    }
+    } while ((selezione < 1 || selezione > 4) || !hasCoins);
+
     return selezione;
-
 }

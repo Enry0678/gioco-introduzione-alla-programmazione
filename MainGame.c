@@ -10,11 +10,13 @@ int main(void)
 {
 
     // VARIABILI
-
+    srand(time(0));
     bool uscitaMenuVillaggio = false;
 
+    // while per far girare il gioco
     while (true)
     {
+        //*******************************MENU PRINCIPALE*********************************** */
         // crea menu principale e fa selezionare l'azione da compiere
         char scelta = menuPrincipale(false); // false: non ha sbloccato i trucchi di default
         printf("scelta: %c\n", scelta);
@@ -39,7 +41,7 @@ int main(void)
         }
 
         int sceltaVillaggio;
-
+        //******************************MENU VILLAGGIO*************************************************** */
         uscitaMenuVillaggio = false;
         while (!uscitaMenuVillaggio)
         {
@@ -49,36 +51,35 @@ int main(void)
             case 1: // intraprendi una missione
                 printf("Intraprende una missione\n");
                 short int selezioneMissione = menuSelezioneMissione(partita);
-                if(selezioneMissione == 4){
-                    //TODO
-                    //missioneFinale();
+                if (selezioneMissione == 4)
+                {
+                    // TODO
+                    // missioneFinale();
                 }
+                //**********************INIZIO MENU MISSIONE************************************* */
                 short int selezioneMenuMissione = 0;
-                while(selezioneMissione!=4){
+                while (selezioneMissione != 4)
+                {
                     selezioneMenuMissione = menuMissione(selezioneMissione, &partita);
-                    switch(selezioneMenuMissione){
-                        case 1:
-                        
-                            break;
-                        case 2:
+                    switch (selezioneMenuMissione)
+                    {
+                    case 1:
 
-                            break;
-                        case 3:
+                        break;
+                    case 2:
 
-                            break;
-                        case 4:
-                            if(partita.giocatore.monete<50){
-                                printf("Non hai abbastanza monete per ritirarti dalla missione\n");
-                            }
-
-                            break;
+                        break;
+                    case 3:
+                        visualizzaInventario(partita);
+                        break;
+                    case 4:
+                        printf("torna al villaggio");
+                        selezioneMissione = 4;
+                        break;
                     }
-
                 }
-                
-
                 break;
-
+                //********************************FINE MENU MISSIONE************************************************ */
             case 2: // riposati
                 printf("L'eroe si riposa\n");
                 printf("I punti vita sono stati ripristinati\n");
