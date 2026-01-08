@@ -50,7 +50,7 @@ int main(void)
             {
             case 1: // intraprendi una missione
                 printf("Intraprende una missione\n");
-                short int selezioneMissione = menuSelezioneMissione(partita);
+                short int selezioneMissione = menuSelezioneMissione(&partita);
                 if (selezioneMissione == 4)
                 {
                     // TODO
@@ -67,14 +67,14 @@ int main(void)
 
                         break;
                     case 2:
-
+                        menuNegozio(&partita);
                         break;
                     case 3:
-                        visualizzaInventario(partita);
+                        visualizzaInventario(&partita);
                         break;
                     case 4:
                         printf("torna al villaggio");
-                        selezioneMissione = 4;
+                        selezioneMissione = 4; //uscita dal menu missione
                         break;
                     }
                 }
@@ -89,7 +89,7 @@ int main(void)
             case 3: // inventario
 
                 printf("Apre inventario\n");
-                visualizzaInventario(partita);
+                visualizzaInventario(&partita);
                 break;
 
             case 4: // Salva Partita

@@ -43,11 +43,12 @@ struct Partita
 //******************************************FUNZIONI************************************************
 char menuPrincipale(bool sblocco);
 short int menuVillaggio();
-void visualizzaInventario(struct Partita partita);
+void visualizzaInventario(struct Partita* partita);
 // void creaStanze(int tipo);
 struct Partita nuovaPartita();
-short int menuSelezioneMissione(struct Partita partita);
+short int menuSelezioneMissione(struct Partita* partita);
 short int menuMissione(short int selezioneMissione, struct Partita* partita);
+void menuNegozio(struct Partita* partita);
 
 // variabili globali
 extern const char *entita_missione_1[6][5];
