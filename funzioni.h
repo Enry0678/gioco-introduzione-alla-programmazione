@@ -33,6 +33,7 @@ struct Missione
 
 struct Partita
 {
+    struct tm* tempo; //salva il tempo (quando si salva)
     struct Player giocatore;
     struct Missione palude_putrescente;
     struct Missione magione_infestata;

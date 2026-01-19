@@ -5,7 +5,7 @@
 // variabili globali per i mob e trappole dove in ordine abbiamo : 1."nome entità " , 2."tipologia dell'entità" 0=fight 1=trap , 3."danno che one shotta l'entità", 4."danno dell'entità", 5."Monete ottenute alla sconfitta"
 
 // mostri e trappole per la prima missione
-const char *entita_missione_1[6][5] = {
+const char const *entita_missione_1[6][5] = {
     {"Cane Selvaggio", "0", "2", "1", "0"},
     {"Goblin", "0", "3", "2", "2"},
     {"Scheletro", "0", "4", "2", "4"},
@@ -15,10 +15,10 @@ const char *entita_missione_1[6][5] = {
 };
 
 // mostri e trappole per la seconda missione
-const char *entita_missione_2[6][5] = {{"Botola Buia", "1", "0", "3", "0"}, {"Pipistrello", "0", "2", "2", "1"}, {"Zombie", "0", "3", "2", "2"}, {"Fantasma", "0", "5", "2", "4"}, {"Vampiro Superiore", "0", "4", "4", "7"}, {"Demone Custode", "0", "4", "6", "10"}};
+const char const *entita_missione_2[6][5] = {{"Botola Buia", "1", "0", "3", "0"}, {"Pipistrello", "0", "2", "2", "1"}, {"Zombie", "0", "3", "2", "2"}, {"Fantasma", "0", "5", "2", "4"}, {"Vampiro Superiore", "0", "4", "4", "7"}, {"Demone Custode", "0", "4", "6", "10"}};
 
 // mostri e trappole per la terza missione
-const char *entita_missione_3[6][5] = {{"Stanza Vuota", "2", "0", "0", "0"}, {"Cristalli Cadenti", "1", "0", "2", "0"}, {"Ponte Pericolante", "1", "0", "0", "-3"}, {"Forziere Misterioso", "1", "0", "2", "10"}, {"Rupe Scoscesa", "1", "0", "d", "0"}, {"Drago Antico", "0", "5", "10", "12"}};
+const char const *entita_missione_3[6][5] = {{"Stanza Vuota", "2", "0", "0", "0"}, {"Cristalli Cadenti", "1", "0", "2", "0"}, {"Ponte Pericolante", "1", "0", "0", "-3"}, {"Forziere Misterioso", "1", "0", "2", "10"}, {"Rupe Scoscesa", "1", "0", "d", "0"}, {"Drago Antico", "0", "5", "10", "12"}};
 
 //**************************************TIRA DADO************************************************
 
@@ -627,3 +627,16 @@ void menuNegozio(struct Partita *partita)
 
     } while (true);
 }
+
+/****************************************************SALVA PARTITA*****************************************************************/
+/*
+  struct tm *t = localtime(&now);
+
+  printf("Year: %d\n", t->tm_year + 1900);
+  printf("Month: %d\n", t->tm_mon + 1);
+  printf("Day: %d\n", t->tm_mday);
+  printf("Hour: %d\n", t->tm_hour + 1);
+  printf("Minute: %d\n", t->tm_min);
+  printf("Second: %d\n", t->tm_sec);
+  */
+
