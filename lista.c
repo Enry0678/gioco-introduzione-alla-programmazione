@@ -4,31 +4,42 @@
 #include "funzioni.h"
 #include "lista.h"
 
+int n_partita = 1;
+
+//************************************CREA NODO**************************************** */
 list_t* l_create_node(struct Partita val){
     list_t* n = (list_t*) malloc(sizeof(list_t));
     if(n == NULL){
         exit(EXIT_FAILURE);
     }
+    time_t adesso = time(NULL);
+    struct tm t = *localtime(&adesso);
+    val.tempo=t;
     n->index=n_partita++;
     n->salvataggio = val; 
     n->next = NULL;
     return n;
 }
 
-void l_stampa(list_t* n){
+//**********************************STAMPA LISTA**************************************** */
+bool l_stampa(list_t* n){
     list_t* temp = n;
+    if(n_partita == 1){
+        printf("Non ci sono salvataggi, verrà creata una nuova partita\n");
+        return false;
+    }
     while(temp != NULL){
-        printf("%d. ", temp->index);
+        printf("\t%d. ", temp->index);
 
         //stampo la data
-        printf("%d-", temp->salvataggio.tempo->tm_mday);
-        printf("%d-", temp->salvataggio.tempo->tm_mon + 1);
-        printf("%d  ", temp->salvataggio.tempo->tm_year + 1900);
+        printf("%d-", temp->salvataggio.tempo.tm_mday);
+        printf("%d-", temp->salvataggio.tempo.tm_mon + 1);
+        printf("%d  ", temp->salvataggio.tempo.tm_year + 1900);
         
         //stampo l'ora
-        printf("%02d:", temp->salvataggio.tempo->tm_hour + 1);
-        printf("%02d:", temp->salvataggio.tempo->tm_min);
-        printf("%02d,  ", temp->salvataggio.tempo->tm_sec);
+        printf("%02d:", temp->salvataggio.tempo.tm_hour);
+        printf("%02d:", temp->salvataggio.tempo.tm_min);
+        printf("%02d,  ", temp->salvataggio.tempo.tm_sec);
 
         //stampo info partita
         printf("%d P.VITA, ", temp->salvataggio.giocatore.vita);
@@ -60,12 +71,14 @@ void l_stampa(list_t* n){
         if(temp->salvataggio.grotta_di_cristallo.completata){
             n_missioni_completate++;
         }
-        printf("%d MISSIONI COMPLETATE", n_missioni_completate);
+        printf("%d MISSIONI COMPLETATE\n", n_missioni_completate);
 
         temp = temp->next;
     }
+    return true;
 }
 
+//**************************************CANCELLA UN NODO********************************* */
 //elimina un nodo specifico dalla lista
 void n_free(list_t** l1, int ind){
 
@@ -102,6 +115,7 @@ void n_free(list_t** l1, int ind){
     return;
 }
 
+//*********************************INSERISCI UN NODO******************************************** */
 //inserimento alla fine della lista
 list_t* l_push_back(list_t* l, struct Partita val){
     list_t* n = l_create_node(val);
@@ -118,6 +132,7 @@ list_t* l_push_back(list_t* l, struct Partita val){
     return l;
 }
 
+//********************************SELEZIONA UN NODO********************************** */
 struct Partita pull(list_t* l, int ind){
     list_t* temp = l;
     while(temp!=NULL){
@@ -128,6 +143,6 @@ struct Partita pull(list_t* l, int ind){
     }
     
     struct Partita vuota;
-    vuota.tempo = -1;
+    vuota.tempo.tm_mday = -1;
     return vuota;
 }

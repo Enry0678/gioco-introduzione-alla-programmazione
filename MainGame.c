@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "funzioni.h"
+#include "lista.h"
 
 //************************************** MAIN *********************************************
 int main(void)
@@ -12,6 +13,8 @@ int main(void)
     // VARIABILI
     srand(time(0));
     bool uscitaMenuVillaggio = false;
+    list_t salvataggi;
+    
 
     // while per far girare il gioco
     while (true)
@@ -32,6 +35,7 @@ int main(void)
             break;
 
         case '2': // carica partita
+            menuCaricaPartita(&salvataggi, &partita);
             printf("2\n");
             break;
 
@@ -94,20 +98,30 @@ int main(void)
 
             case 4: // Salva Partita
                 printf("Salva la partita\n");
+                if(n_partita == 1){
+                    salvataggi = *l_create_node(partita); //crea il nodo se primo
+                }
+                else{
+                    salvaPartita(partita, &salvataggi); //salva dopo se non è primo
+                }
+                
                 break;
 
             case 5: // esci con controllo si o no
                 printf("Stai uscendo dal gioco\n");
                 printf("Ricordati di salvare la partita per non perdere i tuoi progressi\n");
-                printf("Sei sicuro di voler procedere? [Y/N]: ");
+                
                 char tmp = ' ';
                 do
                 {
-                    while ((tmp = getchar()) != '\n')
-                    {
-                    } // pulisci il buffer
+                    printf("Sei sicuro di voler procedere? [Y/N]: ");
                     scanf("%c", &tmp);
-                    printf("tmp: %c\n", tmp);
+                    if(tmp != 'Y' && tmp != 'N' && tmp != 'y' && tmp != 'n'){
+                        printf("\nScelta non valida\n\n");
+                        while ((tmp = getchar()) != '\n')
+                        {
+                        } // pulisci il buffer
+                    }
                 } while (tmp != 'Y' && tmp != 'N' && tmp != 'y' && tmp != 'n'); // il si e no vengono visti come Y e N anche come y e n
                 if (tmp == 'y' || tmp == 'Y')
                 {

@@ -1,5 +1,6 @@
 //*****************************************LIBRERIE**********************************************
 #include "funzioni.h"
+#include "lista.h"
 
 // *****************************************VARIABILI GLOBALI*****************************************
 // variabili globali per i mob e trappole dove in ordine abbiamo : 1."nome entità " , 2."tipologia dell'entità" 0=fight 1=trap , 3."danno che one shotta l'entità", 4."danno dell'entità", 5."Monete ottenute alla sconfitta"
@@ -144,6 +145,12 @@ short int menuVillaggio()
             printf("OPZIONE NON VALIDA\n");
             valido = true;
         }
+
+        // svuota il buffer
+        int c;
+        while ((c = getchar()) != '\n')
+        {
+        }
     } while (valido);
 
     return opzione;
@@ -209,6 +216,10 @@ void visualizzaInventario(struct Partita *partita)
         if (scelta != 1 && scelta != 2)
         {
             printf("L'opzione selezionata non è valida\n");
+            char c;
+            while ((c = getchar()) != '\n')
+            {
+            }
         }
 
     } while (scelta != 2);
@@ -405,14 +416,15 @@ short int menuSelezioneMissione(struct Partita *partita)
             }
 
             printf("]: ");
-            while ((scelta = getchar()) != '\n')
-            {
-            } // pulisci il buffer
             scanf("%d", &scelta); // sceglie la stanza
 
             if ((scelta != 1 || partita->palude_putrescente.completata) && (scelta != 2 || partita->magione_infestata.completata) && (scelta != 3 || partita->grotta_di_cristallo.completata))
             {
                 printf("L'opzione selezionata non è valida\n\n");
+                char c;
+                while ((c = getchar()) != '\n')
+                {
+                }
             }
         } while ((scelta != 1 || partita->palude_putrescente.completata) && (scelta != 2 || partita->magione_infestata.completata) && (scelta != 3 || partita->grotta_di_cristallo.completata));
 
@@ -537,6 +549,14 @@ short int menuMissione(short int selezioneMissione, struct Partita *partita)
             hasCoins = true; // in caso che venga scelta un opzione diversa da 4
         }
 
+        if(selezione < 1 || selezione > 4){
+            printf("Scelta non valida\n\n");
+            char c;
+            while ((c = getchar()) != '\n')
+            {
+            }
+        }
+
     } while ((selezione < 1 || selezione > 4) || !hasCoins);
 
     return selezione;
@@ -623,6 +643,10 @@ void menuNegozio(struct Partita *partita)
         if (scelta != 1 && scelta != 2 && scelta != 3)
         {
             printf("La scelta non è valida, scegliere un altra opzione\n\n");
+            char c;
+            while ((c = getchar()) != '\n')
+            {
+            }
         }
 
     } while (true);
@@ -639,4 +663,48 @@ void menuNegozio(struct Partita *partita)
   printf("Minute: %d\n", t->tm_min);
   printf("Second: %d\n", t->tm_sec);
   */
+void salvaPartita(struct Partita p, list_t* salvataggi){
+    l_push_back(salvataggi, p); //salva (creando il nodo automaticamente) nella lista dei salvataggi
+    return;
+}
+
+void caricaPartita(struct Partita* p, list_t* salvataggi, int index){
+    *p = pull(salvataggi, index);
+    return;
+}
+
+int menuCaricaPartita(list_t* salvataggi, struct Partita* partita){
+    system("cls || clear");
+    printf("Salvataggi:\n");
+    if(l_stampa(salvataggi)){
+        int scelta=0;
+        do{
+            printf("Seleziona un salvataggio da caricare: ");
+            scanf("%d", &scelta);
+            //casi problematici
+            caricaPartita(partita, salvataggi, scelta);
+            if(scelta<1 || scelta > n_partita || partita->tempo.tm_mday == -1){
+                printf("Scelta non valida, inserire un salvataggio esistente\n");
+            }
+        }
+        while(scelta<1 || scelta > n_partita || partita->tempo.tm_mday == -1);
+    }
+    else{
+        *partita = nuovaPartita();
+
+        printf("Premi invio per continuare...");
+        ungetc('A', stdin); // inserisce nel buffer il valore "A" per permettere """l'invio istantaneo"""
+        getchar();          // aspetta l'invio
+        char c;
+        while ((c = getchar()) != '\n')
+        {
+        } // svuota il buffer per evitare dati indesiderati
+    }
+    
+
+    
+    
+    
+}
+
 

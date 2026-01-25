@@ -8,18 +8,12 @@
 #include <time.h>
 #include "funzioni.h"
 
-struct Node{
-    int index;
-    struct Partita salvataggio; 
-    struct Node* next;
-};
 
-typedef struct Node list_t;
-
-int n_partita=1;
+extern int n_partita;
 
 list_t* l_create_node(struct Partita val);
-void l_stampa(list_t* n);
+bool l_stampa(list_t* n);
 list_t* l_push_back(list_t* l, struct Partita val);
+struct Partita pull(list_t* l, int ind);
 
 #endif
