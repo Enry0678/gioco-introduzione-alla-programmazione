@@ -7,10 +7,8 @@
 #include <string.h>
 #include <time.h>
 
-
 struct Node;
 typedef struct Node list_t;
-
 
 // *****************************************STRUTTURE DATI*****************************************
 
@@ -33,12 +31,12 @@ struct Missione
     bool completata; // segna se la missione è completata
     int tipo;        // segna il tipo della missione: 0 = palude putrescente, 1 = magione infestata, 2 = grotta di cristallo
     int boss_sconfitti;
-    int stanze[10];  // stanze della missione (da generare proceduralmente)
+    int stanze[10]; // stanze della missione (da generare proceduralmente)
 };
 
 struct Partita
 {
-    struct tm tempo; //salva il tempo (quando si salva)
+    struct tm tempo; // salva il tempo (quando si salva)
     struct Player giocatore;
     struct Missione palude_putrescente;
     struct Missione magione_infestata;
@@ -46,24 +44,27 @@ struct Partita
     // la missione finale viene gestita in modo diverso (sasso, carta, forbice)
 };
 
-struct Node{
+struct Node
+{
     int index;
-    struct Partita salvataggio; 
-    struct Node* next;
+    struct Partita salvataggio;
+    struct Node *next;
 };
 
 //******************************************FUNZIONI************************************************
 char menuPrincipale(bool sblocco);
 short int menuVillaggio();
-void visualizzaInventario(struct Partita* partita);
+void visualizzaInventario(struct Partita *partita);
 // void creaStanze(int tipo);
 struct Partita nuovaPartita();
-short int menuSelezioneMissione(struct Partita* partita);
-short int menuMissione(short int selezioneMissione, struct Partita* partita);
-void menuNegozio(struct Partita* partita);
-void salvaPartita(struct Partita p, list_t* salvataggi);
-void caricaPartita(struct Partita* p, list_t* salvataggi, int index);
-int menuCaricaPartita(list_t* salvataggi, struct Partita* partita);
+short int menuSelezioneMissione(struct Partita *partita);
+short int menuMissione(short int selezioneMissione, struct Partita *partita);
+void menuNegozio(struct Partita *partita);
+void salvaPartita(struct Partita p, list_t *salvataggi);
+void caricaPartita(struct Partita *p, list_t *salvataggi, int index);
+int menuCaricaPartita(list_t *salvataggi, struct Partita *partita);
+bool menuStanza(struct Partita *partita, short int selezioneMissione);
+void invioPerContinuare();
 
 // variabili globali
 extern const char *entita_missione_1[6][5];

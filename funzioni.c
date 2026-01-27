@@ -3,7 +3,7 @@
 #include "lista.h"
 
 // *****************************************VARIABILI GLOBALI*****************************************
-// variabili globali per i mob e trappole dove in ordine abbiamo : 1."nome entità " , 2."tipologia dell'entità" 0=fight 1=trap , 3."danno che one shotta l'entità", 4."danno dell'entità", 5."Monete ottenute alla sconfitta"
+// variabili globali per i mob e trappole dove in ordine abbiamo : 0."nome entità " , 1."tipologia dell'entità" 0=fight 1=trap , 2."danno che one shotta l'entità", 3."danno dell'entità", 4."Monete ottenute alla sconfitta"
 
 // mostri e trappole per la prima missione
 const char const *entita_missione_1[6][5] = {
@@ -23,9 +23,22 @@ const char const *entita_missione_3[6][5] = {{"Stanza Vuota", "2", "0", "0", "0"
 
 //**************************************TIRA DADO************************************************
 
-short int tiraDado()
+short int tiraDado() // funzione che serve per tirare un dado a 6 faccie
 {
     return (rand() % 6) + 1;
+}
+
+/***************************************INVIO PER CONTIUARE ******************************************/
+void invioPerContinuare()
+{ // funzione che serve per fermare il gioco e premere invio per continuare
+    printf("Premi invio per continuare...");
+    ungetc('A', stdin); // inserisce nel buffer il valore "A" per permettere """l'invio istantaneo"""
+    getchar();          // aspetta l'invio
+    char c;
+    while ((c = getchar()) != '\n')
+    {
+    } // svuota il buffer per evitare dati indesiderati
+    return;
 }
 
 //**************************************SBLOCCO TRUCCHI******************************************
@@ -233,13 +246,13 @@ void creaStanze(struct Partita *partita, int tipo)
     switch (tipo)
     {
     // palude putrescente
-    case 0:
+    case 1:
         int contatoreOrco = 0;
         int j;
         for (j = 0; j < 7; j++) // ciclo for per generare le prime 7 stanze
         {
             partita->palude_putrescente.stanze[j] = tiraDado() - 1; // genera un numero pseudo-casuale tra 0 e 5
-            if (partita->palude_putrescente.stanze[j] == 5) // controllo se è stato generato un orco
+            if (partita->palude_putrescente.stanze[j] == 5)         // controllo se è stato generato un orco
             {
                 contatoreOrco++;
             }
@@ -257,21 +270,22 @@ void creaStanze(struct Partita *partita, int tipo)
         break; // segna la fine del case
 
     // magione infestata
-    case 1:
+    case 2:
         i = 0;
-        int contatoreVampiro = 0; // conta quanti vampiri sono stati generati
-        int contatoreDemone = 0;  // conta quanti demoni sono stati generati
+        int contatoreVampiro = 0;                                       // conta quanti vampiri sono stati generati
+        int contatoreDemone = 0;                                        // conta quanti demoni sono stati generati
         for (i; i < 10 - (2 - contatoreVampiro - contatoreDemone); i++) // riserva gli spazi per la forzatura
-        { 
+        {
             partita->magione_infestata.stanze[i] = tiraDado() - 1;
 
             // controllo dei requisiti
-            //controllo del vampiro superiore
+            // controllo del vampiro superiore
             if (partita->magione_infestata.stanze[i] == 4)
             {
-                //rigenera la stanza in caso ci sia già un vampiro superiore
-                if(partita->magione_infestata.stanze[i]==4 && contatoreVampiro>=1){
-                    partita->magione_infestata.stanze[i] = tiraDado()%4;
+                // rigenera la stanza in caso ci sia già un vampiro superiore
+                if (partita->magione_infestata.stanze[i] == 4 && contatoreVampiro >= 1)
+                {
+                    partita->magione_infestata.stanze[i] = tiraDado() % 4;
                 }
                 // conta quanti vampiri ci sono (PER FORZA 1 solo)
                 if (contatoreVampiro == 0)
@@ -279,13 +293,14 @@ void creaStanze(struct Partita *partita, int tipo)
                     contatoreVampiro++;
                 }
             }
-            
-            //controllo del demone custode
+
+            // controllo del demone custode
             if (partita->magione_infestata.stanze[i] == 5)
             {
-                // rigenera la stanza in caso ci sia già un demone custode 
-                if(partita->magione_infestata.stanze[i]==5 && contatoreDemone>=1){
-                    partita->magione_infestata.stanze[i] = tiraDado()%4;
+                // rigenera la stanza in caso ci sia già un demone custode
+                if (partita->magione_infestata.stanze[i] == 5 && contatoreDemone >= 1)
+                {
+                    partita->magione_infestata.stanze[i] = tiraDado() % 4;
                 }
                 // conta quanti demoni custodi ci sono (PER FORZA 1 solo)
                 if (contatoreDemone == 0)
@@ -322,21 +337,25 @@ void creaStanze(struct Partita *partita, int tipo)
         break; // segna la fine del case
 
     // grotta di cristallo
-    case 2:
+    case 3:
 
-    int contatoreDrago = 0;
-    for(i=0;i<9;i++){
-        partita->grotta_di_cristallo.stanze[i]=tiraDado()-1;
-        if(partita->grotta_di_cristallo.stanze[i]==5){
-            contatoreDrago++;
+        int contatoreDrago = 0;
+        for (i = 0; i < 9; i++)
+        {
+            partita->grotta_di_cristallo.stanze[i] = tiraDado() - 1;
+            if (partita->grotta_di_cristallo.stanze[i] == 5)
+            {
+                contatoreDrago++;
+            }
+            if (contatoreDrago == 1)
+            {
+                break;
+            }
         }
-        if(contatoreDrago==1){
-            break;
+        for (int k = contatoreDrago; k < 1; k++)
+        {
+            partita->grotta_di_cristallo.stanze[i++] = 5;
         }
-    }
-    for(int k=contatoreDrago;k<1;k++){
-        partita->grotta_di_cristallo.stanze[i++]=5;
-    }
         break; // segna la fine del case
     }
 }
@@ -428,7 +447,7 @@ short int menuSelezioneMissione(struct Partita *partita)
             }
         } while ((scelta != 1 || partita->palude_putrescente.completata) && (scelta != 2 || partita->magione_infestata.completata) && (scelta != 3 || partita->grotta_di_cristallo.completata));
 
-        creaStanze(partita, scelta - 1);
+        creaStanze(partita, scelta);
         return scelta;
     }
     else
@@ -549,12 +568,13 @@ short int menuMissione(short int selezioneMissione, struct Partita *partita)
             hasCoins = true; // in caso che venga scelta un opzione diversa da 4
         }
 
-        if(selezione < 1 || selezione > 4){
+        if (selezione < 1 || selezione > 4)
+        {
             printf("Scelta non valida\n\n");
-            char c;
-            while ((c = getchar()) != '\n')
-            {
-            }
+        }
+        char c;
+        while ((c = getchar()) != '\n')
+        {
         }
 
     } while ((selezione < 1 || selezione > 4) || !hasCoins);
@@ -653,58 +673,275 @@ void menuNegozio(struct Partita *partita)
 }
 
 /****************************************************SALVA PARTITA*****************************************************************/
-/*
-  struct tm *t = localtime(&now);
-
-  printf("Year: %d\n", t->tm_year + 1900);
-  printf("Month: %d\n", t->tm_mon + 1);
-  printf("Day: %d\n", t->tm_mday);
-  printf("Hour: %d\n", t->tm_hour + 1);
-  printf("Minute: %d\n", t->tm_min);
-  printf("Second: %d\n", t->tm_sec);
-  */
-void salvaPartita(struct Partita p, list_t* salvataggi){
-    l_push_back(salvataggi, p); //salva (creando il nodo automaticamente) nella lista dei salvataggi
+void salvaPartita(struct Partita p, list_t *salvataggi)
+{
+    l_push_back(salvataggi, p); // salva (creando il nodo automaticamente) nella lista dei salvataggi
     return;
 }
 
-void caricaPartita(struct Partita* p, list_t* salvataggi, int index){
+/****************************************************CARICA PARTITA**************************************************************** */
+void caricaPartita(struct Partita *p, list_t *salvataggi, int index)
+{
     *p = pull(salvataggi, index);
     return;
 }
 
-int menuCaricaPartita(list_t* salvataggi, struct Partita* partita){
+/*****************************************************MENU CARICA PARTITA************************************************************* */
+int menuCaricaPartita(list_t *salvataggi, struct Partita *partita)
+{
     system("cls || clear");
     printf("Salvataggi:\n");
-    if(l_stampa(salvataggi)){
-        int scelta=0;
-        do{
+    if (l_stampa(salvataggi))
+    {
+        int scelta = 0;
+        do
+        {
             printf("Seleziona un salvataggio da caricare: ");
             scanf("%d", &scelta);
-            //casi problematici
+            // casi problematici
             caricaPartita(partita, salvataggi, scelta);
-            if(scelta<1 || scelta > n_partita || partita->tempo.tm_mday == -1){
+            if (scelta < 1 || scelta > n_partita || partita->tempo.tm_mday == -1)
+            {
                 printf("Scelta non valida, inserire un salvataggio esistente\n");
             }
-        }
-        while(scelta<1 || scelta > n_partita || partita->tempo.tm_mday == -1);
+        } while (scelta < 1 || scelta > n_partita || partita->tempo.tm_mday == -1);
     }
-    else{
+    else
+    {
         *partita = nuovaPartita();
 
-        printf("Premi invio per continuare...");
-        ungetc('A', stdin); // inserisce nel buffer il valore "A" per permettere """l'invio istantaneo"""
-        getchar();          // aspetta l'invio
-        char c;
-        while ((c = getchar()) != '\n')
-        {
-        } // svuota il buffer per evitare dati indesiderati
+        invioPerContinuare();
     }
-    
-
-    
-    
-    
 }
 
+/***********************************************MENU STANZA*************************************************** */
+bool menuStanza(struct Partita *partita, short int selezioneMissione) // ritorna true se il giocatore muore
+{
+    system("cls || clear");
+    int stanza = 0;
+    switch (selezioneMissione)
+    {
+    // palude putrescente -----------------------------
+    case 1:
+        // trova la stanza in cui entrare
+        for (int i = 0; i < 11; i++)
+        {
+            // in caso che siano finite le stanze del dungeon
+            if (i == 10)
+            {
+                printf("Non ci sono altre stanze nel dungeon\n");
+                invioPerContinuare();
+                return true;
+            }
 
+            if (partita->palude_putrescente.stanze[i] != -1)
+            {
+                stanza = partita->palude_putrescente.stanze[i]; // salva il valore della stanza in una variabile
+                partita->palude_putrescente.stanze[i] = -1;     // segna che la stanza è stata visitata
+                i = 10;                                         // esce dal for
+            }
+        }
+
+        // decide cosa fare in base al tipo di stanza
+        if (atoi(entita_missione_1[stanza][1]) == 1)
+        { // caso in cui trova una trappola
+            printf("Il giocatore è entrato in un %s\n", entita_missione_1[stanza][0]);
+            invioPerContinuare();
+            printf("Viene tirato un dado da 6 facce per determinare il danno inflitto al giocatore\n");
+            short int risultato = tiraDado();
+            printf("Il risultato: %hd\n", risultato);
+            partita->giocatore.vita -= risultato - partita->giocatore.oggetti[2]; // si riduce il danno subito se il giocatore ha l'armatura
+            // controlla se il giocatore muore
+            if (partita->giocatore.vita <= 0)
+            {
+                return false; // il giocatore è morto
+            }
+            printf("la vita del giocatore scende a %d\n", partita->giocatore.vita); // visualizza la vita del giocatore dopo il danno
+            invioPerContinuare();
+        }
+        else
+        { // caso in cui ci sia un combattimento
+            printf("Il giocatore incontra %s e inizia il combattimento.\n", entita_missione_1[stanza][0]);
+            invioPerContinuare();
+            short int risultato = 0;
+            while (risultato < atoi(entita_missione_1[stanza][2]))
+            {
+                printf("Viene lanciato un dado per stabilire l'attacco dell'eroe\n");
+                risultato = tiraDado(); // tira il dado per stabilire l'attacco dell'erore
+                risultato += partita->giocatore.oggetti[1];
+                if (partita->giocatore.oggetti[1] != 0)
+                {
+                    if (partita->giocatore.oggetti[1] == 1)
+                    {
+                        printf("Il risultato: %hd (potenziato da spada)\n", risultato);
+                    }
+                    else
+                    {
+                        printf("Il risultato: %hd (potenziato da spada dell'eroe)\n", risultato);
+                    }
+                }
+                else
+                {
+                    printf("Il risultato: %hd (potenziato da spada)\n", risultato);
+                }
+
+                // in caso che il giocatore uccida il nemico
+                if (risultato >= atoi(entita_missione_1[stanza][2]))
+                {
+                    printf("%s viene sconfitto (%hd >= %d). L'eroe rimane con %d punti vita, e riceve %d monete\n", entita_missione_1[stanza][0], risultato, atoi(entita_missione_1[stanza][2]), partita->giocatore.vita, atoi(entita_missione_1[stanza][4]));
+                    partita->giocatore.monete += atoi(entita_missione_1[stanza][4]);
+
+                    // conta quanti generali orco vengono uccisi
+                    if (entita_missione_1[stanza][0] == "Generale Orco")
+                    {
+                        partita->palude_putrescente.boss_sconfitti++;
+                        if (partita->palude_putrescente.boss_sconfitti == 3)
+                        {
+                            partita->palude_putrescente.completata = true;
+                        }
+                    }
+                    invioPerContinuare();
+                }
+                else
+                { // in caso che il giocatore prenda danno
+                    printf("Attacco non sufficiente per sconfiggere %s (%hd < Colpo Fatale = %d)\n", entita_missione_1[stanza][0], risultato, atoi(entita_missione_1[stanza][2]));
+                    partita->giocatore.vita -= atoi(entita_missione_1[stanza][3]) - partita->giocatore.oggetti[2]; // atoi converte la stringa in decimale
+
+                    if (partita->giocatore.vita <= 0)
+                    {
+                        return false; // il giocatore è morto
+                    }
+
+                    printf("%s infligge %d danni all' eroe. L' eroe rimane con %d punti vita\n", entita_missione_1[stanza][0], atoi(entita_missione_1[stanza][3]) - partita->giocatore.oggetti[2], partita->giocatore.vita);
+                    invioPerContinuare();
+                }
+            }
+        }
+
+        return true; // il giocatore è ancora in vita
+        break;
+
+    // magione infestata ------------------------------
+    case 2:
+        // trova la stanza in cui entrare
+        for (int i = 0; i < 11; i++)
+        {
+            // in caso che siano finite le stanze del dungeon
+            if (i == 10)
+            {
+                printf("Non ci sono altre stanze nel dungeon\n");
+                invioPerContinuare();
+                return true;
+            }
+
+            if (partita->magione_infestata.stanze[i] != -1)
+            {
+                stanza = partita->magione_infestata.stanze[i]; // salva il valore della stanza in una variabile
+                partita->magione_infestata.stanze[i] = -1;     // segna che la stanza è stata visitata
+                i = 10;                                         // esce dal for
+            }
+        }
+
+        // decide cosa fare in base al tipo di stanza
+        if (atoi(entita_missione_2[stanza][1]) == 1)
+        { // caso in cui trova una trappola
+            printf("Il giocatore è entrato in %s\n", entita_missione_2[stanza][0]);
+            invioPerContinuare();
+            printf("Viene inflitto %d di danno al giocatore(il danno di base è 3 ridotto se in possesso dell'armatura)\n", atoi(entita_missione_2[stanza][3]) - partita->giocatore.oggetti[2]);
+            partita->giocatore.vita -= atoi(entita_missione_2[stanza][3]) - partita->giocatore.oggetti[2]; // si riduce il danno subito se il giocatore ha l'armatura
+            // controlla se il giocatore muore
+            if (partita->giocatore.vita <= 0)
+            {
+                return false; // il giocatore è morto
+            }
+            printf("la vita del giocatore scende a %d\n", partita->giocatore.vita); // visualizza la vita del giocatore dopo il danno
+            invioPerContinuare();
+        }
+        else
+        { // caso in cui ci sia un combattimento
+            printf("Il giocatore incontra %s e inizia il combattimento.\n", entita_missione_2[stanza][0]);
+            invioPerContinuare();
+            short int risultato = 0;
+            while (risultato < atoi(entita_missione_2[stanza][2]))
+            {
+                printf("Viene lanciato un dado per stabilire l'attacco dell'eroe\n");
+                risultato = tiraDado(); // tira il dado per stabilire l'attacco dell'erore
+                risultato += partita->giocatore.oggetti[1];
+                if (partita->giocatore.oggetti[1] != 0)
+                {
+                    if (partita->giocatore.oggetti[1] == 1)
+                    {
+                        printf("Il risultato: %hd (potenziato da spada)\n", risultato);
+                    }
+                    else
+                    {
+                        printf("Il risultato: %hd (potenziato da spada dell'eroe)\n", risultato);
+                    }
+                }
+                else
+                {
+                    printf("Il risultato: %hd (potenziato da spada)\n", risultato);
+                }
+
+                // in caso che il giocatore uccida il nemico
+                if (risultato >= atoi(entita_missione_2[stanza][2]))
+                {
+                    printf("%s viene sconfitto (%hd >= %d). L'eroe rimane con %d punti vita, e riceve %d monete\n", entita_missione_2[stanza][0], risultato, atoi(entita_missione_2[stanza][2]), partita->giocatore.vita, atoi(entita_missione_2[stanza][4]));
+                    partita->giocatore.monete += atoi(entita_missione_2[stanza][4]);
+
+                    //
+                    if (entita_missione_2[stanza][0] == "Demone Custode")
+                    {
+                        partita->giocatore.oggetti[3]=1;
+                    }
+
+                    if(entita_missione_2[stanza][0] == "Vampiro Superiore"){
+                        partita->magione_infestata.boss_sconfitti++;
+                    }
+
+                    if(partita->giocatore.oggetti[3]==1 && partita->magione_infestata.boss_sconfitti>0)
+                    {
+                        partita->magione_infestata.completata = true;
+                    }
+                    invioPerContinuare();
+                }
+                else
+                { // in caso che il giocatore prenda danno
+                    printf("Attacco non sufficiente per sconfiggere %s (%hd < Colpo Fatale = %d)\n", entita_missione_2[stanza][0], risultato, atoi(entita_missione_2[stanza][2]));
+                    partita->giocatore.vita -= atoi(entita_missione_2[stanza][3]) - partita->giocatore.oggetti[2]; // atoi converte la stringa in decimale
+
+                    if (partita->giocatore.vita <= 0)
+                    {
+                        return false; // il giocatore è morto
+                    }
+
+                    printf("%s infligge %d danni all' eroe. L' eroe rimane con %d punti vita\n", entita_missione_2[stanza][0], atoi(entita_missione_2[stanza][3]) - partita->giocatore.oggetti[2], partita->giocatore.vita);
+                    invioPerContinuare();
+                }
+            }
+        }
+
+        return true; // il giocatore è ancora in vita
+        break;
+
+    // grotta di cristallo ----------------------------
+    case 3:
+
+        return true; // il giocatore è ancora in vita
+        break;
+    }
+    return true;
+}
+
+/*
+L ’ eroe incontra un mob e inizia il combattimento .
+Viene lanciato un dado per stabilire l ’ attacco dell ’ eroe
+Il risultato : 1.
+Attacco non sufficiente per sconfiggere lo scheletro (1 < Colpo Fatale =2).
+Lo scheletro infligge 2 danni all ’ eroe . L ’ eroe rimane con 18 punti vita .
+
+Viene lanciato un dado per stabilire l ’ attacco dell ’ eroe
+Il risultato : 4.
+
+Lo scheletro viene sconfitto (4 > 2). L ’ eroe rimane con 18 punti vita , e riceve 4 monete .
+*/
