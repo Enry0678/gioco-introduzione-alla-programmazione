@@ -838,7 +838,7 @@ bool menuStanza(struct Partita *partita, short int selezioneMissione) // ritorna
             {
                 stanza = partita->magione_infestata.stanze[i]; // salva il valore della stanza in una variabile
                 partita->magione_infestata.stanze[i] = -1;     // segna che la stanza è stata visitata
-                i = 10;                                         // esce dal for
+                i = 10;                                        // esce dal for
             }
         }
 
@@ -892,14 +892,15 @@ bool menuStanza(struct Partita *partita, short int selezioneMissione) // ritorna
                     //
                     if (entita_missione_2[stanza][0] == "Demone Custode")
                     {
-                        partita->giocatore.oggetti[3]=1;
+                        partita->giocatore.oggetti[3] = 1;
                     }
 
-                    if(entita_missione_2[stanza][0] == "Vampiro Superiore"){
+                    if (entita_missione_2[stanza][0] == "Vampiro Superiore")
+                    {
                         partita->magione_infestata.boss_sconfitti++;
                     }
 
-                    if(partita->giocatore.oggetti[3]==1 && partita->magione_infestata.boss_sconfitti>0)
+                    if (partita->giocatore.oggetti[3] == 1 && partita->magione_infestata.boss_sconfitti > 0)
                     {
                         partita->magione_infestata.completata = true;
                     }
