@@ -56,8 +56,20 @@ int main(void)
                 short int selezioneMissione = menuSelezioneMissione(&partita);
                 if (selezioneMissione == 4)
                 {
-                    // TODO
-                    // missioneFinale();
+                    if (missione_finale())
+                    {              // parte la missione finale
+                        victory(); // parte  la scritta della vittoria
+                        invioPerContinuare();
+                    }
+                    else
+                    {
+                        game_over(); // parte il game over in caso di sconfitta dell'eroe dalla missione finale
+                        invioPerContinuare();
+                    }
+
+                    // setta le condizioni per uscire al menu iniziale
+                    selezioneMissione = 4;
+                    uscitaMenuVillaggio = true;
                 }
                 //**********************INIZIO MENU MISSIONE************************************* */
                 short int selezioneMenuMissione = 0;
@@ -75,20 +87,7 @@ int main(void)
                         {
                             selezioneMissione = 4;
                             uscitaMenuVillaggio = true;
-
-                            // schermata di game over
-                            system("cls || clear");
-                            printf("\033[1;31m");
-
-                            printf("   ______          ___  ___  _____       _____  _   _  _____ ______ \n");
-                            printf("  / ____/   /|    /   |/   |/ ___/      / ___ \\| | | || ___ \\| ___ \\\n");
-                            printf(" | |  __   / |   / /|  /|  | |__       | |   | | | | || |__  || |_/ /\n");
-                            printf(" | | |_ | / /|  / / |__/ |  |  __|     | |   | | | | ||  __| ||    / \n");
-                            printf(" | |__| |/ / | / /       |  | |____    | |___| |\\ \\_/ /| |____| |\\ \\ \n");
-                            printf("  \\_____/_/  |_/_/        |_|______/    \\_____/  \\___/ \\_____/\\_| \\_|\n");
-
-                            // Reset colore
-                            printf("\033[0m\n");
+                            game_over();
                             invioPerContinuare();
                         }
 

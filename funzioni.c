@@ -1,11 +1,29 @@
-//*****************************************LIBRERIE**********************************************
+// ********************************************************************************************************************************************************************
+// SEZIONE LIBRERIE
+// ********************************************************************************************************************************************************************
 #include "funzioni.h"
 #include "lista.h"
+// ********************************************************************************************************************************************************************
+// DEFINIZIONE COSTANTI ANSI (Colori per il Terminale)
+// Questi codici sono sequenze di escape che comunicano direttamente con il terminale.
+// ********************************************************************************************************************************************************************
+#define RESET "\x1b[0m"
+#define BOLD "\x1b[1m"
+#define RED "\x1b[31m"
+#define GREEN "\x1b[38;5;82m"
+// ********************************************************************************************************************************************************************
+// VARIABILI GLOBALI (Note di sviluppo)
+// 0. Nome Entità | 1. Tipo (0=Fight, 1=Trap) | 2. Danno Letale | 3. Danno | 4. Loot
+// ********************************************************************************************************************************************************************
+// Struttura delle colonne [6 righe][5 colonne]:
+// 0: Nome dell'entità
+// 1: Tipologia (0 = Combattimento/Fight, 1 = Trappola, 2 = Stanza vuota)
+// 2: Danno "One-Shot" (Danno necessario per sconfiggerlo subito)
+// 3: Forza d'attacco (Danno inflitto al giocatore. 'd' indica danno variabile)
+// 4: Ricompensa (Monete ottenute o perse alla fine dell'incontro)
+// ********************************************************************************************************************************************************************
 
-// *****************************************VARIABILI GLOBALI*****************************************
-// variabili globali per i mob e trappole dove in ordine abbiamo : 0."nome entità " , 1."tipologia dell'entità" 0=fight 1=trap , 2."danno che one shotta l'entità", 3."danno dell'entità", 4."Monete ottenute alla sconfitta"
-
-// mostri e trappole per la prima missione
+// ---- MIISSIONE 1: Palude Putrescente ----
 const char const *entita_missione_1[6][5] = {
     {"Cane Selvaggio", "0", "2", "1", "0"},
     {"Goblin", "0", "3", "2", "2"},
@@ -15,17 +33,87 @@ const char const *entita_missione_1[6][5] = {
     {"Generale Orco", "0", "6", "3", "12"},
 };
 
-// mostri e trappole per la seconda missione
+// ---- MIISSIONE 2: Magione Infestata ----
 const char const *entita_missione_2[6][5] = {{"Botola Buia", "1", "0", "3", "0"}, {"Pipistrello", "0", "2", "2", "1"}, {"Zombie", "0", "3", "2", "2"}, {"Fantasma", "0", "5", "2", "4"}, {"Vampiro Superiore", "0", "4", "4", "7"}, {"Demone Custode", "0", "4", "6", "10"}};
 
-// mostri e trappole per la terza missione
+// ---- MIISSIONE 3: Grotta di Cristallo ----
 const char const *entita_missione_3[6][5] = {{"Stanza Vuota", "2", "0", "0", "0"}, {"Cristalli Cadenti", "1", "0", "2", "0"}, {"Ponte Pericolante", "1", "0", "0", "-3"}, {"Forziere Misterioso", "1", "0", "2", "10"}, {"Rupe Scoscesa", "1", "0", "d", "0"}, {"Drago Antico", "0", "5", "10", "12"}};
 
-//**************************************TIRA DADO************************************************
-
+// ********************************************************************************************************************************************************************
+// TIRA DADO
+// ********************************************************************************************************************************************************************
 short int tiraDado() // funzione che serve per tirare un dado a 6 faccie
 {
     return (rand() % 6) + 1;
+}
+
+//*****************************************PADOVAN********************************************** */
+
+int padovan(int x)
+{
+    if (x == 0 || x == 1 || x == 2)
+    {
+        return 1;
+    }
+    return padovan(x - 2) + padovan(x - 3);
+}
+
+//*****************************************IS IN PADOVAN****************************************** */
+bool isInPadovan(int x)
+{
+    int i = 0;
+    int n = 0;
+    while (true)
+    {
+        n = padovan(i);
+        if (n == x)
+        {
+            return true;
+        }
+        else if (n > x)
+        {
+            return false;
+        }
+        i++;
+    }
+}
+
+//************************************VICTORY************************************* */
+void victory()
+{
+    system("cls || clear");
+    printf("\n\n" GREEN BOLD);
+
+    // Scritta VICTORY
+    printf(" /$$    /$$ /$$$$$$  /$$$$$$  /$$$$$$$$ /$$$$$$  /$$$$$$$  /$$     /$$\n");
+    printf("| $$   | $$|_  $$_/ /$$__  $$|__  $$__//$$__  $$| $$__  $$|  $$   /$$/\n");
+    printf("| $$   | $$  | $$  | $$  \\__/   | $$  | $$  \\ $$| $$  \\ $$ \\  $$ /$$/ \n");
+    printf("|  $$ / $$/  | $$  | $$         | $$  | $$  | $$| $$$$$$$/  \\  $$$$/  \n");
+    printf(" \\  $$ $$/   | $$  | $$         | $$  | $$  | $$| $$__  $$   \\  $$/   \n");
+    printf("  \\  $$$/    | $$  | $$    $$   | $$  | $$  | $$| $$  \\ $$    | $$    \n");
+    printf("   \\  $/    /$$$$$$|  $$$$$$/   | $$  |  $$$$$$/| $$  | $$    | $$    \n");
+    printf("    \\_/    |______/ \\______/    |__/   \\______/ |__/  |__/    |__/    \n");
+    printf("\n" RESET);
+}
+
+//**********************************************GAME OVER**************************************************** */
+void game_over()
+{
+    system("cls || clear");
+    printf("\n\n" RED BOLD);
+
+    // Scritta GAME OVER
+    printf(" @@@@@@@@   @@@@@@   @@@@@@@@@@   @@@@@@@@      @@@@@@   @@@  @@@  @@@@@@@@  @@@@@@@   \n");
+    printf("@@@@@@@@@  @@@@@@@@  @@@@@@@@@@@  @@@@@@@@     @@@@@@@@  @@@  @@@  @@@@@@@@  @@@@@@@@  \n");
+    printf("!@@        @@!  @@@  @@! @@! @@!  @@!          @@!  @@@  @@!  @@@  @@!       @@!  @@@  \n");
+    printf("!@!        !@!  @!@  !@! !@! !@!  !@!          !@!  @!@  !@!  @!@  !@!       !@!  @!@  \n");
+    printf("!@! @!@!@  @!@!@!@!  @!! !!@ @!@  @!!!:!       @!@  !@!  @!@  !@!  @!!!:!    @!@!!@!   \n");
+    printf("!!! !!@!!  !!!@!!!!  !@!   ! !@!  !!!!!:       !@!  !!!  !@!  !!!  !!!!!:    !!@!@!    \n");
+    printf(":!!   !!:  !!:  !!!  !!:     !!:  !!:          !!:  !!!  :!:  !!:  !!:       !!: :!!   \n");
+    printf(":!:   !::  :!:  !:!  :!:     :!:  :!:          :!:  !:!   ::!!:!   :!:       :!:  !:!  \n");
+    printf(" ::: ::::  ::   :::  :::     ::    :: ::::     ::::: ::    ::::     :: ::::  ::   :::  \n");
+    printf(" :: :: :    :   : :   :      :    : :: ::       : :  :      :      : :: ::    :   : :  \n");
+    printf("\n" RESET);
 }
 
 /***************************************INVIO PER CONTIUARE ******************************************/
@@ -38,6 +126,7 @@ void invioPerContinuare()
     while ((c = getchar()) != '\n')
     {
     } // svuota il buffer per evitare dati indesiderati
+    printf("\n");
     return;
 }
 
@@ -453,19 +542,15 @@ short int menuSelezioneMissione(struct Partita *partita)
     else
     {
         printf("\t4. Castello del Signore Oscuro\n\n");
-        printf("Hai completato tutte le missioni, digita INVIO per affrontare la missione finale\n");
-        char c;
-        // svuota il buffer per preparare il getchar()
-        while ((c = getchar()) != '\n')
-        {
-        }
         printf("Premi invio per continuare...");
 
         ungetc('A', stdin); // inserisce nel buffer il valore "A" per permettere """l'invio istantaneo"""
         getchar();          // aspetta l'invio
+        char c;
         while ((c = getchar()) != '\n')
         {
         } // svuota il buffer per evitare dati indesiderati
+        return 4;
     }
 }
 
@@ -590,11 +675,12 @@ void menuNegozio(struct Partita *partita)
     system("cls || clear"); // cancella tutta la console per poi stampare tutto il menu
 
     printf("Negozio\n"); // visualizza tutto il negozio
+    printf("Monete: %d\n", partita->giocatore.monete);
     printf("Seleziona un item da acquistare:\n\n");
     printf("\t_______________________________________________________________________________________________\n");
     printf("\t|  OGGETTO     |                       DESCRIZIONE                                   |  COSTO  |\n");
     printf("\t| 1. Pozione:  |  Curativa Ripristina fino a 6 Punti Vita (lancia un dado a 6 facce) |   4     |\n ");
-    printf("\t| 2. Spada:    |  +1 all’attacco dell’eroe (acquistabile una volta sola)             |   5     |\n");
+    printf("\t| 2. Spada:    |  +1 all'attacco dell'eroe (acquistabile una volta sola)             |   5     |\n");
     printf("\t| 3. Armatura: |  -1 al danno del nemico/trappola (acquistabile una volta sola)      |   10    |\n");
     printf("\t|______________|_____________________________________________________________________|_________|\n\n");
 
@@ -613,9 +699,10 @@ void menuNegozio(struct Partita *partita)
             }
             else
             {
-                printf("Hai acquistato la pozione\n\n");
+                printf("Hai acquistato la pozione\n");
                 partita->giocatore.oggetti[0]++;
                 partita->giocatore.monete -= 4;
+                printf("Ti rimangono %d monete\n\n", partita->giocatore.monete);
             }
         }
         // acquisto della spada
@@ -633,7 +720,8 @@ void menuNegozio(struct Partita *partita)
             {
                 partita->giocatore.oggetti[1]++;
                 partita->giocatore.monete -= 5;
-                printf("Hai acquistato la spada\n\n");
+                printf("Hai acquistato la spada\n");
+                printf("Ti rimangono %d monete\n\n", partita->giocatore.monete);
             }
         }
 
@@ -651,7 +739,8 @@ void menuNegozio(struct Partita *partita)
             {
                 partita->giocatore.oggetti[2] = 1;
                 partita->giocatore.monete -= 10;
-                printf("Hai acquistato la l'armatura\n\n");
+                printf("Hai acquistato la l'armatura\n");
+                printf("Ti rimangono %d monete\n\n", partita->giocatore.monete);
             }
         }
         // caso di uscita
@@ -745,7 +834,7 @@ bool menuStanza(struct Partita *partita, short int selezioneMissione) // ritorna
         // decide cosa fare in base al tipo di stanza
         if (atoi(entita_missione_1[stanza][1]) == 1)
         { // caso in cui trova una trappola
-            printf("Il giocatore è entrato in un %s\n", entita_missione_1[stanza][0]);
+            printf("Il giocatore trova nella stanza %s\n", entita_missione_1[stanza][0]);
             invioPerContinuare();
             printf("Viene tirato un dado da 6 facce per determinare il danno inflitto al giocatore\n");
             short int risultato = tiraDado();
@@ -756,7 +845,7 @@ bool menuStanza(struct Partita *partita, short int selezioneMissione) // ritorna
             {
                 return false; // il giocatore è morto
             }
-            printf("la vita del giocatore scende a %d\n", partita->giocatore.vita); // visualizza la vita del giocatore dopo il danno
+            printf("Vengono inflitti %d danni, la vita del giocatore scende a %d\n", risultato - partita->giocatore.oggetti[2], partita->giocatore.vita); // visualizza la vita del giocatore dopo il danno
             invioPerContinuare();
         }
         else
@@ -782,7 +871,7 @@ bool menuStanza(struct Partita *partita, short int selezioneMissione) // ritorna
                 }
                 else
                 {
-                    printf("Il risultato: %hd (potenziato da spada)\n", risultato);
+                    printf("Il risultato: %hd\n", risultato);
                 }
 
                 // in caso che il giocatore uccida il nemico
@@ -818,7 +907,7 @@ bool menuStanza(struct Partita *partita, short int selezioneMissione) // ritorna
             }
         }
 
-        return true; // il giocatore è ancora in vita
+        // return true; // il giocatore è ancora in vita
         break;
 
     // magione infestata ------------------------------
@@ -880,7 +969,7 @@ bool menuStanza(struct Partita *partita, short int selezioneMissione) // ritorna
                 }
                 else
                 {
-                    printf("Il risultato: %hd (potenziato da spada)\n", risultato);
+                    printf("Il risultato: %hd\n", risultato);
                 }
 
                 // in caso che il giocatore uccida il nemico
@@ -892,6 +981,7 @@ bool menuStanza(struct Partita *partita, short int selezioneMissione) // ritorna
                     //
                     if (entita_missione_2[stanza][0] == "Demone Custode")
                     {
+                        printf("Il giocatore ha ottenuto la chiave del Castello del Signore Oscuro!\n");
                         partita->giocatore.oggetti[3] = 1;
                     }
 
@@ -922,27 +1012,285 @@ bool menuStanza(struct Partita *partita, short int selezioneMissione) // ritorna
             }
         }
 
-        return true; // il giocatore è ancora in vita
+        // return true; // il giocatore è ancora in vita
         break;
 
     // grotta di cristallo ----------------------------
     case 3:
+        // trova la stanza in cui entrare
+        for (int i = 0; i < 11; i++)
+        {
+            // in caso che siano finite le stanze del dungeon
+            if (i == 10)
+            {
+                printf("Non ci sono altre stanze nel dungeon\n");
+                invioPerContinuare();
+                return true;
+            }
 
-        return true; // il giocatore è ancora in vita
+            if (partita->grotta_di_cristallo.stanze[i] != -1)
+            {
+                stanza = partita->grotta_di_cristallo.stanze[i]; // salva il valore della stanza in una variabile
+                partita->grotta_di_cristallo.stanze[i] = -1;     // segna che la stanza è stata visitata
+                i = 10;                                          // esce dal for
+            }
+        }
+
+        // decido cosa fare in base al tipo della stanza
+        if (atoi(entita_missione_3[stanza][1]) == 2)
+        {
+            printf("Il giocatore entra in una stanza vuota\n");
+            printf("Il giocatore ritorna al menu missione\n");
+            invioPerContinuare();
+        }
+
+        if (entita_missione_3[stanza][0] == "Cristalli Cadenti")
+        {
+            printf("Il giocatore trova %s\n", entita_missione_3[stanza][0]);
+            partita->giocatore.vita -= atoi(entita_missione_3[stanza][3]) - partita->giocatore.oggetti[2];
+            if (partita->giocatore.vita <= 0)
+            {
+                return false; // il giocatore è morto
+            }
+            printf("Il giocatore subisce %d di danno\n", atoi(entita_missione_3[stanza][3] - partita->giocatore.oggetti[2]));
+            printf("La vita del giocatore scende a %d\n", partita->giocatore.vita);
+            invioPerContinuare();
+        }
+        if (entita_missione_3[stanza][0] == "Ponte Pericolante")
+        {
+            printf("Il giocatore trova %s", entita_missione_3[stanza][0]);
+            partita->giocatore.monete += atoi(entita_missione_3[stanza][4]);
+            printf("Il giocatore perde %d monete, rimanendo con %d monete\n", abs(atoi(entita_missione_3[stanza][4])), partita->giocatore.monete); // voluto che le monete vanno in negativo
+            invioPerContinuare();
+        }
+        if (entita_missione_3[stanza][0] == "Forziere Misterioso")
+        {
+            printf("Il giocatore trova %s\n", entita_missione_3[stanza][0]);
+            printf("Viene lanciata una moneta per determinare il contenuto del forziere\n");
+            int res = tiraDado() % 2; // stesse probabilità di lanciare una moneta
+            invioPerContinuare();
+            // 0 è la testa invec
+            if (res == 0)
+            { // testa
+
+                partita->giocatore.vita -= atoi(entita_missione_3[stanza][3]) - partita->giocatore.oggetti[2];
+                if (partita->giocatore.vita <= 0) // serve per controllare che il giocatore non sia morto
+                {
+                    return false; // il giocatore è morto
+                }
+                printf("È uscito testa: il giocatore subisce %d di danno, rimanendo con %d di vita\n", atoi(entita_missione_3[stanza][3]) - partita->giocatore.oggetti[2], partita->giocatore.vita);
+                invioPerContinuare();
+            }
+            else
+            { // croce
+                partita->giocatore.monete += atoi(entita_missione_3[stanza][4]);
+                printf("È uscito croce: il giocatore riceve %d monete, rimanendo con %d monete\n", atoi(entita_missione_3[stanza][4]), partita->giocatore.monete);
+                invioPerContinuare();
+            }
+        }
+        if (entita_missione_3[stanza][0] == "Rupe Scoscesa")
+        {
+            printf("Il giocatore trova %s\n", entita_missione_3[stanza][0]);
+            printf("Si tira un dado per determinare il danno subito\n");
+            invioPerContinuare();
+            int res = tiraDado();
+            printf("È uscito %d\n", res);
+            partita->giocatore.vita -= res - partita->giocatore.oggetti[2];
+            if (partita->giocatore.vita <= 0) // serve per controllare che il giocatore non sia morto
+            {
+                return false; // il giocatore è morto
+            }
+            printf("Il giocatore subisce %d di danno, rimanendo con %d di vita\n", res - partita->giocatore.oggetti[2], partita->giocatore.vita);
+            invioPerContinuare();
+        }
+
+        if (atoi(entita_missione_3[stanza][1]) == 0)
+        {
+            printf("Il giocatore incontra %s e inizia il combattimento\n", entita_missione_3[stanza][0]);
+            invioPerContinuare();
+
+            int res = 0;
+            while (res < atoi(entita_missione_3[stanza][2]))
+            {
+                printf("Viene lanciato un dado per stabilire il danno dell'eroe\n");
+                res = tiraDado();
+                res += partita->giocatore.oggetti[1];
+                if (partita->giocatore.oggetti[1] != 0)
+                {
+
+                    printf("Il risultato: %hd (potenziato da spada)\n", res);
+                }
+                else
+                {
+                    printf("Il risultato: %hd\n", res);
+                }
+                if (res >= atoi(entita_missione_3[stanza][2]))
+                {
+                    printf("%s viene sconfitto (%hd >= %d). L'eroe rimane con %d punti vita, e riceve %d monete\n", entita_missione_3[stanza][0], res, atoi(entita_missione_3[stanza][2]), partita->giocatore.vita, atoi(entita_missione_3[stanza][4]));
+                    partita->giocatore.monete += atoi(entita_missione_3[stanza][4]);
+
+                    if (entita_missione_3[stanza][0] == "Drago Antico")
+                    {
+                        partita->grotta_di_cristallo.completata = true;
+                        partita->giocatore.oggetti[1] = 2;
+                    }
+                    invioPerContinuare();
+                }
+                else
+                { // qua si decide se il giocatore prende danno
+                    printf("Attacco non sufficiente per sconfiggere %s (%hd < Colpo Fatale = %d)\n", entita_missione_3[stanza][0], res, atoi(entita_missione_3[stanza][2]));
+
+                    int numero = (rand() % 500) + 1; // numero che il giocatore deve dire se fa parte della sequenza di Padovan
+
+                    char tmp = ' ';
+                    do
+                    {
+                        printf("Il drago chiede al giocatore se %d appartiene alla sequenza di Padovan [Y/N]:", numero);
+                        scanf("%c", &tmp);
+                        if (tmp != 'Y' && tmp != 'N' && tmp != 'y' && tmp != 'n')
+                        {
+                            printf("\nScelta non valida\n\n");
+                            while ((tmp = getchar()) != '\n')
+                            {
+                            } // pulisci il buffer
+                        }
+                    } while (tmp != 'Y' && tmp != 'N' && tmp != 'y' && tmp != 'n'); // il si e no vengono visti come Y e N anche come y e n
+                    if ((tmp == 'y' || tmp == 'Y') == isInPadovan(numero)) // giocatore indovina e non subisce il danno (si salva)
+                    {
+                        while ((tmp = getchar()) != '\n')
+                        {
+                        } // pulisci il buffer prima di uscire
+                        printf("Il drago non infligge danno al giocatore\n");
+                        invioPerContinuare();
+                    }
+                    else // giocatore subisce il danno (non indovina)
+                    {
+                        while ((tmp = getchar()) != '\n')
+                        {
+                        } // pulisci il buffer prima di uscire
+                        printf("Il giocatore ha sbagliato risposta\n");
+                        partita->giocatore.vita -= atoi(entita_missione_3[stanza][3]) - partita->giocatore.oggetti[2]; // atoi converte la stringa in decimale
+
+                        if (partita->giocatore.vita <= 0)
+                        {
+                            return false; // il giocatore è morto
+                        }
+
+                        printf("%s infligge %d danni all' eroe, l'eroe rimane con %d punti vita\n", entita_missione_3[stanza][0], atoi(entita_missione_3[stanza][3]) - partita->giocatore.oggetti[2], partita->giocatore.vita);
+                        invioPerContinuare();
+                    }
+                }
+            }
+        }
+        // return true;
         break;
     }
     return true;
 }
 
-/*
-L ’ eroe incontra un mob e inizia il combattimento .
-Viene lanciato un dado per stabilire l ’ attacco dell ’ eroe
-Il risultato : 1.
-Attacco non sufficiente per sconfiggere lo scheletro (1 < Colpo Fatale =2).
-Lo scheletro infligge 2 danni all ’ eroe . L ’ eroe rimane con 18 punti vita .
+/**********************************************************MISSIONE FINALE***************************************************************** */
 
-Viene lanciato un dado per stabilire l ’ attacco dell ’ eroe
-Il risultato : 4.
+bool missione_finale()
+{
+    // scudo=sasso , magia=carta , spada=forbici
+    int round = 1;                // round corrente
+    int vinte_eroe = 0;           // round vinti dall'eroe
+    int vinte_signore_oscuro = 0; // round vinti dal signore oscuro
+    int scelta_eroe;
+    int scelta_signore_oscuro;
 
-Lo scheletro viene sconfitto (4 > 2). L ’ eroe rimane con 18 punti vita , e riceve 4 monete .
-*/
+    while (vinte_eroe < 3 && vinte_signore_oscuro < 3)
+    {
+        system("cls || clear");
+        printf("Scontro finale | Round %d su 5 | Eroe %d - Signore Oscuro  %d\n\n", round, vinte_eroe, vinte_signore_oscuro);
+        printf("Mosse disponibili\n");
+        printf("\t1. scudo\n");
+        printf("\t2. magia\n");
+        printf("\t3. spada\n");
+        do
+        {
+            printf("Seleziona una delle opzioni del menu [1-3]: ");
+            scanf("%d", &scelta_eroe);
+
+            if (scelta_eroe < 1 || scelta_eroe > 3)
+            {
+                printf("Opzione non valida, selezionare una delle opzioni\n\n");
+            }
+
+            char c;
+            while ((c = getchar()) != '\n')
+            {
+            } // pulisci il buffer
+        } while (scelta_eroe < 1 || scelta_eroe > 3);
+
+        // genera la scelta del signore oscuro (diversa da quella dell'eroe)
+        do
+        {
+            scelta_signore_oscuro = (rand() % 3) + 1;
+
+        } while (scelta_signore_oscuro == scelta_eroe);
+        printf("\n");
+        switch (scelta_signore_oscuro) // per tradurre i numeri in cosa ha scelto il signore oscuro
+        {
+        case 1:
+            printf("Il Signore Oscuro nel frattempo ha scelto Scudo.\n");
+            break;
+
+        case 2:
+            printf("Il Signore Oscuro nel frattempo ha scelto Magia.\n");
+            break;
+
+        case 3:
+            printf("Il Signore Oscuro nel frattempo ha scelto Spada.\n");
+            break;
+        }
+
+        // caso: scudo <--> magia
+        if ((scelta_eroe == 1 && scelta_signore_oscuro == 2) || (scelta_eroe == 2 && scelta_signore_oscuro == 1))
+        {
+            if (scelta_eroe == 1)
+            { // caso eroe: scudo, signore: magia
+                printf("L'incantesimo del Signore Oscuro infrange le difese dell'eroe.\nIl signore oscuro si aggiudica il round.\n");
+                vinte_signore_oscuro++;
+            }
+            else
+            { // caso eroe: magia, signore: scudo
+                printf("L'eroe sprigiona un potere arcano che travolge le difese del nemico.\nL'eroe si aggiudica il round.\n");
+                vinte_eroe++;
+            }
+        }
+        else if ((scelta_eroe == 1 && scelta_signore_oscuro == 3) || (scelta_eroe == 3 && scelta_signore_oscuro == 1))
+        { // caso scudo <--> spada
+            if (scelta_eroe == 1)
+            { // caso eroe: scudo, signore: spada
+                printf("L'eroe solleva lo scudo con fermezza, deviando il fendente del nemico e contrattaccando con successo.\nL'eroe si aggiudica il round.\n");
+                vinte_eroe++;
+            }
+            else
+            { // caso eroe: spada, signore: scudo
+                printf("Il Signore Oscuro intercetta il colpo dell'eroe con agilità.\nIl signore oscuro si aggiudica il round.\n");
+                vinte_signore_oscuro++;
+            }
+        }
+        else if ((scelta_eroe == 2 && scelta_signore_oscuro == 3) || (scelta_eroe == 3 && scelta_signore_oscuro == 2))
+        { // caso magia <--> spada
+            if (scelta_eroe == 2)
+            { // caso eroe: magia, signore: spada
+                printf("La lama del Signore Oscuro sibila nell'aria, interrompendo l'incantesimo dell'eroe.\nIl signore oscuro si aggiudica il round.\n");
+                vinte_signore_oscuro++;
+            }
+            else
+            { // caso eroe: spada, signore: magia
+                printf("Con un colpo rapido e preciso, l'eroe trafigge le ombre del Signore Oscuro prima che possa lanciare la sua magia.\nL'eroe si aggiudica il round.\n");
+                vinte_eroe++;
+            }
+        }
+        invioPerContinuare();
+    }
+
+    if (vinte_eroe > vinte_signore_oscuro)
+    {
+        return true; // L'eroe ha sconfitto il signore oscuro
+    }
+    return false; // L'eroe perde
+}

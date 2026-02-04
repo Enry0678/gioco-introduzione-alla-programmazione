@@ -65,6 +65,9 @@ void caricaPartita(struct Partita *p, list_t *salvataggi, int index);
 int menuCaricaPartita(list_t *salvataggi, struct Partita *partita);
 bool menuStanza(struct Partita *partita, short int selezioneMissione);
 void invioPerContinuare();
+void victory();
+void game_over();
+bool missione_finale();
 
 // variabili globali
 extern const char *entita_missione_1[6][5];
