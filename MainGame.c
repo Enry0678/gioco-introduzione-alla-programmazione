@@ -13,7 +13,7 @@ int main(void)
     // VARIABILI
     srand(time(0));
     bool uscitaMenuVillaggio = false;
-    list_t salvataggi;
+    list_t *salvataggi = NULL;
 
     // while per far girare il gioco
     while (true)
@@ -21,38 +21,38 @@ int main(void)
         //*******************************MENU PRINCIPALE*********************************** */
         // crea menu principale e fa selezionare l'azione da compiere
         char scelta = menuPrincipale(false); // false: non ha sbloccato i trucchi di default
-        printf("scelta: %c\n", scelta);
 
         // struttura che contiene la partita
         struct Partita partita;
+        // variabile che indica se entrare nel menu villaggio o restare su quello principale
+        bool entra = true;
         // compie l'azione selezionata
         switch (scelta)
         {
         case '1': // nuova partita
             partita = nuovaPartita();
-            printf("1\n");
             break;
 
         case '2': // carica partita
-            menuCaricaPartita(&salvataggi, &partita);
-            printf("2\n");
+            entra = menuSalvataggi(&salvataggi, &partita);
             break;
 
         case '3': // trucchi
-            printf("3\n");
+            menuTrucchi(salvataggi);
+            entra = false; // impedisce di entrare nel menu villaggio se si usano i trucchi
             break;
         }
 
         int sceltaVillaggio;
         //******************************MENU VILLAGGIO*************************************************** */
         uscitaMenuVillaggio = false;
-        while (!uscitaMenuVillaggio)
+        while (!uscitaMenuVillaggio && entra)
         {
+            entra = true; // resetta la variabile in modo che si possa accedere al menu villaggio la prossima volta
             sceltaVillaggio = menuVillaggio();
             switch (sceltaVillaggio)
             {
             case 1: // intraprendi una missione
-                printf("Intraprende una missione\n");
                 short int selezioneMissione = menuSelezioneMissione(&partita);
                 if (selezioneMissione == 4)
                 {
@@ -102,8 +102,7 @@ int main(void)
                     case 3:
                         visualizzaInventario(&partita);
                         break;
-                    case 4:
-                        printf("torna al villaggio");
+                    case 4:                    // torna al villaggio
                         selezioneMissione = 4; // uscita dal menu missione
                         break;
                     }
@@ -114,25 +113,24 @@ int main(void)
                 printf("L'eroe si riposa\n");
                 printf("I punti vita sono stati ripristinati\n");
                 partita.giocatore.vita = 20;
+                invioPerContinuare();
                 break;
 
             case 3: // inventario
-
-                printf("Apre inventario\n");
                 visualizzaInventario(&partita);
                 break;
 
             case 4: // Salva Partita
-                printf("Salva la partita\n");
-                if (n_partita == 1)
+                if (salvataggi == NULL)
                 {
-                    salvataggi = *l_create_node(partita); // crea il nodo se primo
+                    salvataggi = l_create_node(partita); // crea il nodo se primo
                 }
                 else
                 {
-                    salvaPartita(partita, &salvataggi); // salva dopo se non è primo
+                    salvataggi = l_push_back(salvataggi, partita);
                 }
-
+                printf("Partita salvata con successo!\n");
+                invioPerContinuare();
                 break;
 
             case 5: // esci con controllo si o no
@@ -154,15 +152,11 @@ int main(void)
                 } while (tmp != 'Y' && tmp != 'N' && tmp != 'y' && tmp != 'n'); // il si e no vengono visti come Y e N anche come y e n
                 if (tmp == 'y' || tmp == 'Y')
                 {
+
                     while ((tmp = getchar()) != '\n')
                     {
                     } // pulisci il buffer prima di uscire
-                    printf("Uscita dal gioco...\n");
                     uscitaMenuVillaggio = true;
-                }
-                else
-                {
-                    printf("Ritorno al menu del villaggio\n");
                 }
                 break;
             }

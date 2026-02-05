@@ -47,7 +47,9 @@ short int tiraDado() // funzione che serve per tirare un dado a 6 faccie
     return (rand() % 6) + 1;
 }
 
-//*****************************************PADOVAN********************************************** */
+// ********************************************************************************************************************************************************************
+// PADOVAN
+// ********************************************************************************************************************************************************************
 
 int padovan(int x)
 {
@@ -58,7 +60,9 @@ int padovan(int x)
     return padovan(x - 2) + padovan(x - 3);
 }
 
-//*****************************************IS IN PADOVAN****************************************** */
+// ********************************************************************************************************************************************************************
+// IS IN PADOVAN
+// ********************************************************************************************************************************************************************
 bool isInPadovan(int x)
 {
     int i = 0;
@@ -78,7 +82,9 @@ bool isInPadovan(int x)
     }
 }
 
-//************************************VICTORY************************************* */
+// ********************************************************************************************************************************************************************
+// VICTORY
+// ********************************************************************************************************************************************************************
 void victory()
 {
     system("cls || clear");
@@ -96,7 +102,9 @@ void victory()
     printf("\n" RESET);
 }
 
-//**********************************************GAME OVER**************************************************** */
+// ********************************************************************************************************************************************************************
+// GAME OVER
+// ********************************************************************************************************************************************************************
 void game_over()
 {
     system("cls || clear");
@@ -116,7 +124,9 @@ void game_over()
     printf("\n" RESET);
 }
 
-/***************************************INVIO PER CONTIUARE ******************************************/
+// ********************************************************************************************************************************************************************
+// INVIO PER CONTIUARE
+// ********************************************************************************************************************************************************************
 void invioPerContinuare()
 { // funzione che serve per fermare il gioco e premere invio per continuare
     printf("Premi invio per continuare...");
@@ -130,7 +140,9 @@ void invioPerContinuare()
     return;
 }
 
-//**************************************SBLOCCO TRUCCHI******************************************
+// ********************************************************************************************************************************************************************
+// SBLOCCO TRUCCHI
+// ********************************************************************************************************************************************************************
 // codice Konami: w w s s a d a d b a [Spazio]
 bool sbloccoTrucchi()
 {
@@ -157,7 +169,9 @@ bool sbloccoTrucchi()
     return true;
 }
 
-//*************************************MENU PRINCIPALE*******************************************
+// ********************************************************************************************************************************************************************
+// *******************************************************************MENU PRINCIPALE**********************************************************************************
+// ********************************************************************************************************************************************************************
 
 // funzione che crea il menu principale e gestisce l'input della selezione -> funzione ricorsiva :)
 char menuPrincipale(bool sblocco) // sblocco = se vero viene visualizzata l'opzione trucchi altrimenti no
@@ -541,7 +555,7 @@ short int menuSelezioneMissione(struct Partita *partita)
     }
     else
     {
-        printf("\t4. Castello del Signore Oscuro\n\n");
+        printf("\tCastello del Signore Oscuro\n\n");
         printf("Premi invio per continuare...");
 
         ungetc('A', stdin); // inserisce nel buffer il valore "A" per permettere """l'invio istantaneo"""
@@ -769,37 +783,94 @@ void salvaPartita(struct Partita p, list_t *salvataggi)
 }
 
 /****************************************************CARICA PARTITA**************************************************************** */
-void caricaPartita(struct Partita *p, list_t *salvataggi, int index)
+bool caricaPartita(struct Partita *p, list_t *salvataggi, int index)
 {
-    *p = pull(salvataggi, index);
-    return;
+    struct Partita *partitaTrovata = pull(salvataggi, index);
+    if (partitaTrovata == NULL)
+    {
+        return false; // non trova la partita
+    }
+    *p = *partitaTrovata; // partita trovata e caricata
+    return true;
 }
 
 /*****************************************************MENU CARICA PARTITA************************************************************* */
-int menuCaricaPartita(list_t *salvataggi, struct Partita *partita)
+bool menuSalvataggi(list_t **salvataggi, struct Partita *partita)
 {
-    system("cls || clear");
-    printf("Salvataggi:\n");
-    if (l_stampa(salvataggi))
+    while (true)
     {
-        int scelta = 0;
-        do
-        {
-            printf("Seleziona un salvataggio da caricare: ");
-            scanf("%d", &scelta);
-            // casi problematici
-            caricaPartita(partita, salvataggi, scelta);
-            if (scelta < 1 || scelta > n_partita || partita->tempo.tm_mday == -1)
-            {
-                printf("Scelta non valida, inserire un salvataggio esistente\n");
-            }
-        } while (scelta < 1 || scelta > n_partita || partita->tempo.tm_mday == -1);
-    }
-    else
-    {
-        *partita = nuovaPartita();
+        system("cls || clear");
+        printf("Carica salvataggio:\n");
 
-        invioPerContinuare();
+        if (l_stampa(*salvataggi))
+        {
+            int scelta = 0;
+            bool risCaricaPartita;
+            do
+            {
+                printf("Seleziona un salvataggio: ");
+                scanf("%d", &scelta);
+                // casi problematici
+                risCaricaPartita = caricaPartita(partita, *salvataggi, scelta);
+                if (scelta < 1 || scelta > n_partita || !risCaricaPartita)
+                {
+                    printf("Scelta non valida, inserire un salvataggio esistente\n\n");
+                }
+                char c;
+                while ((c = getchar()) != '\n')
+                {
+                }
+            } while (scelta < 1 || scelta > n_partita || !risCaricaPartita);
+
+            printf("\nOpzioni per il salvataggio %d:\n", scelta);
+            printf("\t1.Carica Partita\n");
+            printf("\t2.Elimina Salvataggio\n");
+            printf("\t3.Torna al menu principale\n");
+
+            int scelta1;
+            do
+            {
+                printf("\nSeleziona opzione [0-3]: ");
+                scanf("%d", &scelta1);
+
+                if (scelta1 < 0 || scelta1 > 3)
+                {
+                    printf("Scelta non valida, riprovare\n\n");
+                }
+                char c;
+                while ((c = getchar()) != '\n')
+                {
+                }
+            } while (scelta1 < 0 || scelta1 > 3);
+
+            if (scelta1 == 2) // elimina
+            {
+
+                n_free(salvataggi, scelta);
+
+                printf("Salvataggio eliminato\n");
+                invioPerContinuare();
+
+                // torna al menu principale
+                return false;
+            }
+            else if (scelta1 == 1) // carica partita
+            {
+                return true; // fa continuare il gioco
+            }
+            else if (scelta1 == 3)
+            {
+                return false; // torna al menu principale
+            }
+        }
+        else
+        {
+            // Se l_stampa ha restituito false, la lista è vuota
+            printf("\nVerrà creata una nuova partita\n");
+            *partita = nuovaPartita();
+            invioPerContinuare();
+            return true;
+        }
     }
 }
 
@@ -936,7 +1007,7 @@ bool menuStanza(struct Partita *partita, short int selezioneMissione) // ritorna
         { // caso in cui trova una trappola
             printf("Il giocatore è entrato in %s\n", entita_missione_2[stanza][0]);
             invioPerContinuare();
-            printf("Viene inflitto %d di danno al giocatore(il danno di base è 3 ridotto se in possesso dell'armatura)\n", atoi(entita_missione_2[stanza][3]) - partita->giocatore.oggetti[2]);
+            printf("Viene inflitto %d di danno al giocatore(il danno di base è 3, ridotto se in possesso dell'armatura)\n", atoi(entita_missione_2[stanza][3]) - partita->giocatore.oggetti[2]);
             partita->giocatore.vita -= atoi(entita_missione_2[stanza][3]) - partita->giocatore.oggetti[2]; // si riduce il danno subito se il giocatore ha l'armatura
             // controlla se il giocatore muore
             if (partita->giocatore.vita <= 0)
@@ -1058,9 +1129,18 @@ bool menuStanza(struct Partita *partita, short int selezioneMissione) // ritorna
         }
         if (entita_missione_3[stanza][0] == "Ponte Pericolante")
         {
-            printf("Il giocatore trova %s", entita_missione_3[stanza][0]);
-            partita->giocatore.monete += atoi(entita_missione_3[stanza][4]);
-            printf("Il giocatore perde %d monete, rimanendo con %d monete\n", abs(atoi(entita_missione_3[stanza][4])), partita->giocatore.monete); // voluto che le monete vanno in negativo
+            printf("Il giocatore trova %s\n", entita_missione_3[stanza][0]);
+            if (partita->giocatore.monete + atoi(entita_missione_3[stanza][4]) < 0)
+            { // controlla se il giocatore è andato in negativo
+                printf("Il giocatore perde tutte le monete in suo possesso\n");
+                partita->giocatore.monete = 0;
+            }
+            else
+            {
+                partita->giocatore.monete += atoi(entita_missione_3[stanza][4]);
+                printf("Il giocatore perde %d monete, rimanendo con %d monete\n", abs(atoi(entita_missione_3[stanza][4])), partita->giocatore.monete);
+            }
+
             invioPerContinuare();
         }
         if (entita_missione_3[stanza][0] == "Forziere Misterioso")
@@ -1285,6 +1365,7 @@ bool missione_finale()
                 vinte_eroe++;
             }
         }
+        round++;
         invioPerContinuare();
     }
 
@@ -1293,4 +1374,121 @@ bool missione_finale()
         return true; // L'eroe ha sconfitto il signore oscuro
     }
     return false; // L'eroe perde
+}
+
+//**************************************************MENU TRUCCHI******************************************** */
+
+void menuTrucchi(list_t *salvataggi)
+{
+    system("cls || clear");
+    printf("Menu Trucchi\n\n");
+    printf("Salvataggi disponibili:\n");
+    if (!l_stampa(salvataggi))
+    {
+        printf("Torna al menu iniziale\n");
+        invioPerContinuare();
+        return;
+    }
+    int sceltaSalvataggio;
+    struct Partita *partita = NULL;
+    int risScan = 0;
+    do
+    {
+
+        printf("Seleziona un salvataggio da modificare: ");
+        risScan = scanf("%d", &sceltaSalvataggio);
+        if (risScan != 1)
+        {
+            printf("Input non valido, riprova\n\n");
+            while (getchar() != '\n')
+            {
+            } // pulisce il buffer
+        }
+        else
+        {
+            partita = pull(salvataggi, sceltaSalvataggio);
+            if (partita == NULL)
+            {
+                printf("Salvataggio non trovato, riprova\n\n");
+                invioPerContinuare();
+                return;
+            }
+        }
+
+    } while (sceltaSalvataggio < 0 || risScan != 1 || partita == NULL);
+
+    printf("\nOpzioni disponibili:\n");
+    printf("\t1. Modifica monete\n");
+    printf("\t2. Modifica punti vita\n");
+    printf("\t3. Sblocca missione finale\n");
+    printf("\t4. Esci dal menu trucchi\n\n");
+    int scelta;
+    bool uscita = false;
+
+    do
+    {
+        printf("seleziona un opzione del menu [1-4]: ");
+        scanf("%d", &scelta);
+        switch (scelta)
+        {
+        case 1:               // modifica monete
+            int moneteN = -1; // monete nuove
+            risScan;
+            do
+            {
+                printf("Inserici il numero di monete da impostare (maggiore di 0): ");
+                risScan = scanf("%d", &moneteN);
+                if (risScan != 1 || moneteN < 0)
+                { // se si legge un intero correttamente scanf restituisce 1
+                    printf("Input non valido, riprova\n\n");
+                    while (getchar() != '\n')
+                    {
+                    } // pulisce il buffer
+                }
+                else
+                {
+                    printf("Le monete del giocatore sono state impostate a %d\n\n", moneteN);
+                    partita->giocatore.monete = moneteN;
+                    invioPerContinuare();
+                }
+            } while (moneteN < 0 || risScan != 1);
+            break;
+
+        case 2:        // modifica punti vita
+            int vitaN; // vita nuova
+            risScan;
+            do
+            {
+                printf("Inserici il numero di punti vita da impostare ( 0 < vita <= 20 ): ");
+                risScan = scanf("%d", &vitaN);
+                if (risScan != 1 || (vitaN <= 0 || vitaN > 20))
+                { // se si legge un intero correttamente scanf restituisce 1
+                    printf("Input non valido, riprova\n\n");
+                    while (getchar() != '\n')
+                    {
+                    } // pulisce il buffer
+                }
+                else
+                {
+                    printf("La vita del giocatore è stata impostata a %d\n\n", vitaN);
+                    partita->giocatore.vita = vitaN;
+                    invioPerContinuare();
+                }
+            } while (vitaN <= 0 || vitaN > 20 || risScan != 1);
+            break;
+        case 3: // sblocco missione finale
+            printf("La missione finale è stata sbloccata\n\n");
+            partita->palude_putrescente.completata = true;
+            partita->magione_infestata.completata = true;
+            partita->grotta_di_cristallo.completata = true;
+            invioPerContinuare();
+            break;
+        case 4: // uscita
+            uscita = true;
+            break;
+        default:
+            printf("Scelta non valida, selezionare un'altra opzione\n\n");
+            break;
+        }
+    } while (!uscita);
 }

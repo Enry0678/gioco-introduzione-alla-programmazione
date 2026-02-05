@@ -27,9 +27,9 @@ list_t *l_create_node(struct Partita val)
 bool l_stampa(list_t *n)
 {
     list_t *temp = n;
-    if (n_partita == 1)
+    if (n == NULL)
     {
-        printf("Non ci sono salvataggi, verrà creata una nuova partita\n");
+        printf("Non ci sono salvataggi\n");
         return false;
     }
     while (temp != NULL)
@@ -93,10 +93,10 @@ bool l_stampa(list_t *n)
 void n_free(list_t **l1, int ind)
 {
 
-    // Controllo se la lista è vuota
+    // Controllo se la lista è vuota anche se non può essere vuota quando viene chiamata la funzione
     if (l1 == NULL || *l1 == NULL)
     {
-        printf("\n\nNON CI SONO SALVATAGGIO\n\n");
+        printf("\n\nNON CI SONO SALVATAGGI\n\n");
         return;
     }
 
@@ -150,19 +150,17 @@ list_t *l_push_back(list_t *l, struct Partita val)
 }
 
 //********************************SELEZIONA UN NODO********************************** */
-struct Partita pull(list_t *l, int ind)
+struct Partita *pull(list_t *l, int ind)
 {
     list_t *temp = l;
     while (temp != NULL)
     {
         if (temp->index == ind)
         {
-            return temp->salvataggio;
+            return &(temp->salvataggio);
         }
         temp = temp->next;
     }
 
-    struct Partita vuota;
-    vuota.tempo.tm_mday = -1;
-    return vuota;
+    return NULL;
 }
