@@ -255,6 +255,7 @@ short int menuVillaggio()
     {
         valido = false;
         printf("Seleziona una delle opzioni del menu [1-5]: ");
+        opzione = 0;
         scanf("%d", &opzione);
         if (opzione < 1 || opzione > 5)
         {
@@ -307,6 +308,7 @@ void visualizzaInventario(struct Partita *partita)
     {
 
         printf("\nSeleziona una delle opzioni[1,2]: ");
+        scelta = 0;
         scanf("%d", &scelta);
 
         if (scelta == 1 && partita->giocatore.oggetti[0] > 0 && partita->giocatore.vita < 20)
@@ -332,10 +334,10 @@ void visualizzaInventario(struct Partita *partita)
         if (scelta != 1 && scelta != 2)
         {
             printf("L'opzione selezionata non è valida\n");
-            char c;
-            while ((c = getchar()) != '\n')
-            {
-            }
+        }
+        char c;
+        while ((c = getchar()) != '\n')
+        {
         }
 
     } while (scelta != 2);
@@ -538,6 +540,7 @@ short int menuSelezioneMissione(struct Partita *partita)
             }
 
             printf("]: ");
+            scelta = 0;
             scanf("%d", &scelta); // sceglie la stanza
 
             if ((scelta != 1 || partita->palude_putrescente.completata) && (scelta != 2 || partita->magione_infestata.completata) && (scelta != 3 || partita->grotta_di_cristallo.completata))
@@ -644,6 +647,7 @@ short int menuMissione(short int selezioneMissione, struct Partita *partita)
     {
         hasCoins = false;
         printf("Seleziona un opzione del menu [1-4]: ");
+        selezione = 0;
         scanf("%hd", &selezione);
 
         // controlla che il giocatore abbia le monete necessarie per uscire in caso non abbia completato la missione
@@ -702,11 +706,12 @@ void menuNegozio(struct Partita *partita)
     do
     {
         printf("Scegli cosa comprare [1-3] oppure digita 4 per uscire: ");
+        scelta = 0;
         scanf("%d", &scelta);
 
-        // acquisto di una pozione curativa
-        if (scelta == 1)
+        switch (scelta)
         {
+        case 1: // compra pozione
             if (partita->giocatore.monete < 4)
             {
                 printf("Non hai abbastanza monete per acquistare la pozione\n\n");
@@ -718,10 +723,9 @@ void menuNegozio(struct Partita *partita)
                 partita->giocatore.monete -= 4;
                 printf("Ti rimangono %d monete\n\n", partita->giocatore.monete);
             }
-        }
-        // acquisto della spada
-        if (scelta == 2)
-        {
+            break;
+
+        case 2: // compra spada
             if (partita->giocatore.monete < 5)
             {
                 printf("Non hai abbastanza monete per acquistare la spada\n\n");
@@ -737,10 +741,9 @@ void menuNegozio(struct Partita *partita)
                 printf("Hai acquistato la spada\n");
                 printf("Ti rimangono %d monete\n\n", partita->giocatore.monete);
             }
-        }
+            break;
 
-        if (scelta == 3)
-        {
+        case 3: // compra armatura
             if (partita->giocatore.monete < 10)
             {
                 printf("Non hai abbastanza monete per acquistare l'armatura\n\n");
@@ -756,20 +759,20 @@ void menuNegozio(struct Partita *partita)
                 printf("Hai acquistato la l'armatura\n");
                 printf("Ti rimangono %d monete\n\n", partita->giocatore.monete);
             }
-        }
-        // caso di uscita
-        if (scelta == 4)
-        {
+            break;
+
+        case 4: // esci dal negozio
             return;
+            break;
+
+        default: // scelta non valida
+            printf("La scelta non è valida, scegliere un altra opzione\n\n");
+            break;
         }
 
-        if (scelta != 1 && scelta != 2 && scelta != 3)
+        char c;
+        while ((c = getchar()) != '\n')
         {
-            printf("La scelta non è valida, scegliere un altra opzione\n\n");
-            char c;
-            while ((c = getchar()) != '\n')
-            {
-            }
         }
 
     } while (true);
@@ -809,6 +812,7 @@ bool menuSalvataggi(list_t **salvataggi, struct Partita *partita)
             do
             {
                 printf("Seleziona un salvataggio: ");
+                scelta = 0;
                 scanf("%d", &scelta);
                 // casi problematici
                 risCaricaPartita = caricaPartita(partita, *salvataggi, scelta);
@@ -831,6 +835,7 @@ bool menuSalvataggi(list_t **salvataggi, struct Partita *partita)
             do
             {
                 printf("\nSeleziona opzione [0-3]: ");
+                scelta1 = 0;
                 scanf("%d", &scelta1);
 
                 if (scelta1 < 0 || scelta1 > 3)
@@ -1276,7 +1281,7 @@ bool missione_finale()
     int round = 1;                // round corrente
     int vinte_eroe = 0;           // round vinti dall'eroe
     int vinte_signore_oscuro = 0; // round vinti dal signore oscuro
-    int scelta_eroe;
+    int scelta_eroe = 0;
     int scelta_signore_oscuro;
 
     while (vinte_eroe < 3 && vinte_signore_oscuro < 3)
@@ -1290,6 +1295,7 @@ bool missione_finale()
         do
         {
             printf("Seleziona una delle opzioni del menu [1-3]: ");
+            scelta_eroe = 0; // resetta la scelta
             scanf("%d", &scelta_eroe);
 
             if (scelta_eroe < 1 || scelta_eroe > 3)
@@ -1428,12 +1434,12 @@ void menuTrucchi(list_t *salvataggi)
     do
     {
         printf("seleziona un opzione del menu [1-4]: ");
+        scelta = 0;
         scanf("%d", &scelta);
         switch (scelta)
         {
         case 1:               // modifica monete
             int moneteN = -1; // monete nuove
-            risScan;
             do
             {
                 printf("Inserici il numero di monete da impostare (maggiore di 0): ");
@@ -1449,7 +1455,6 @@ void menuTrucchi(list_t *salvataggi)
                 {
                     printf("Le monete del giocatore sono state impostate a %d\n\n", moneteN);
                     partita->giocatore.monete = moneteN;
-                    invioPerContinuare();
                 }
             } while (moneteN < 0 || risScan != 1);
             break;
@@ -1472,7 +1477,7 @@ void menuTrucchi(list_t *salvataggi)
                 {
                     printf("La vita del giocatore è stata impostata a %d\n\n", vitaN);
                     partita->giocatore.vita = vitaN;
-                    invioPerContinuare();
+                    
                 }
             } while (vitaN <= 0 || vitaN > 20 || risScan != 1);
             break;
@@ -1481,7 +1486,6 @@ void menuTrucchi(list_t *salvataggi)
             partita->palude_putrescente.completata = true;
             partita->magione_infestata.completata = true;
             partita->grotta_di_cristallo.completata = true;
-            invioPerContinuare();
             break;
         case 4: // uscita
             uscita = true;
@@ -1492,3 +1496,5 @@ void menuTrucchi(list_t *salvataggi)
         }
     } while (!uscita);
 }
+
+
