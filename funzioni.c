@@ -1180,7 +1180,7 @@ bool menuStanza(struct Partita *partita, short int selezioneMissione) // ritorna
             {
                 return false; // il giocatore è morto
             }
-            printf("Il giocatore subisce %d di danno\n", atoi(entita_missione_3[stanza][3] - partita->giocatore.oggetti[2]));
+            printf("Il giocatore subisce %d di danno\n", atoi(entita_missione_3[stanza][3]) - partita->giocatore.oggetti[2]);
             printf("La vita del giocatore scende a %d\n", partita->giocatore.vita);
             invioPerContinuare();
         }
