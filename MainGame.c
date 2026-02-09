@@ -39,7 +39,7 @@ int main(void)
 
         case '3': // trucchi
             menuTrucchi(salvataggi);
-            entra = false; // impedisce di entrare nel menu villaggio se si usano i trucchi
+            entra = false; 
             break;
         }
 

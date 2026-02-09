@@ -7,23 +7,16 @@
 // DEFINIZIONE COSTANTI ANSI (Colori per il Terminale)
 // Questi codici sono sequenze di escape che comunicano direttamente con il terminale.
 // ********************************************************************************************************************************************************************
-#define RESET "\x1b[0m"
-#define BOLD "\x1b[1m"
-#define RED "\x1b[31m"
-#define GREEN "\x1b[38;5;82m"
+#define RESET "\x1b[0m"       ///< Ripristina lo stile e il colore predefiniti.
+#define BOLD "\x1b[1m"        ///< Attiva lo stile grassetto
+#define RED "\x1b[31m"        ///< Imposta il colore del testo su Rosso
+#define GREEN "\x1b[38;5;82m" ///< Imposta il colore del testo su Verde
 // ********************************************************************************************************************************************************************
-// VARIABILI GLOBALI (Note di sviluppo)
-// 0. Nome Entità | 1. Tipo (0=Fight, 1=Trap) | 2. Danno Letale | 3. Danno | 4. Loot
-// ********************************************************************************************************************************************************************
-// Struttura delle colonne [6 righe][5 colonne]:
-// 0: Nome dell'entità
-// 1: Tipologia (0 = Combattimento/Fight, 1 = Trappola, 2 = Stanza vuota)
-// 2: Danno "One-Shot" (Danno necessario per sconfiggerlo subito)
-// 3: Forza d'attacco (Danno inflitto al giocatore. 'd' indica danno variabile)
-// 4: Ricompensa (Monete ottenute o perse alla fine dell'incontro)
+// VARIABILI GLOBALI
+// 0. Nome Entità | 1. Tipo (0=mostro, 1=trappola) | 2. Danno Letale | 3. Danno | 4. Loot
 // ********************************************************************************************************************************************************************
 
-// ---- MIISSIONE 1: Palude Putrescente ----
+// ---- MISSIONE 1: Palude Putrescente ----
 const char const *entita_missione_1[6][5] = {
     {"Cane Selvaggio", "0", "2", "1", "0"},
     {"Goblin", "0", "3", "2", "2"},
@@ -33,16 +26,24 @@ const char const *entita_missione_1[6][5] = {
     {"Generale Orco", "0", "6", "3", "12"},
 };
 
-// ---- MIISSIONE 2: Magione Infestata ----
+// ---- MISSIONE 2: Magione Infestata ----
 const char const *entita_missione_2[6][5] = {{"Botola Buia", "1", "0", "3", "0"}, {"Pipistrello", "0", "2", "2", "1"}, {"Zombie", "0", "3", "2", "2"}, {"Fantasma", "0", "5", "2", "4"}, {"Vampiro Superiore", "0", "4", "4", "7"}, {"Demone Custode", "0", "4", "6", "10"}};
 
-// ---- MIISSIONE 3: Grotta di Cristallo ----
+// ---- MISSIONE 3: Grotta di Cristallo ----
 const char const *entita_missione_3[6][5] = {{"Stanza Vuota", "2", "0", "0", "0"}, {"Cristalli Cadenti", "1", "0", "2", "0"}, {"Ponte Pericolante", "1", "0", "0", "-3"}, {"Forziere Misterioso", "1", "0", "2", "10"}, {"Rupe Scoscesa", "1", "0", "d", "0"}, {"Drago Antico", "0", "5", "10", "12"}};
 
 // ********************************************************************************************************************************************************************
 // TIRA DADO
 // ********************************************************************************************************************************************************************
-short int tiraDado() // funzione che serve per tirare un dado a 6 faccie
+
+/**
+ *    @brief Tira un dado a 6 facce 
+ *
+ *    Genera un numero casuale tra 1 e 6
+ *
+ *    @return Ritorna un valore random da 1 a 6
+ */
+short int tiraDado() // Funzione che serve per tirare un dado a 6 faccie
 {
     return (rand() % 6) + 1;
 }
@@ -51,6 +52,13 @@ short int tiraDado() // funzione che serve per tirare un dado a 6 faccie
 // PADOVAN
 // ********************************************************************************************************************************************************************
 
+/**
+ *    @brief Calcola l'i-esimo numero della sequenza di Padovan
+ *
+ *    @param x posizione del numero della sequenza di Padovan
+ *
+ *    @return Ritorna il numero x della sequenza di Padovan 
+ */
 int padovan(int x)
 {
     if (x == 0 || x == 1 || x == 2)
@@ -63,6 +71,16 @@ int padovan(int x)
 // ********************************************************************************************************************************************************************
 // IS IN PADOVAN
 // ********************************************************************************************************************************************************************
+
+/**
+ *    @brief Verifica che un numero faccia parte della sequenza di Padovan
+ * 
+ *    Verifica che il numero faccia parte dei numeri compresi tra 1 e 500 della sequenza di Padovan
+ *
+ *    @param x numero da verificare che sia della sequenza di Padovan
+ *
+ *    @retval true se il numero fa parte della sequenza di padovan , @retval false se il numero non fa parte della sequenza di padovan
+ */
 bool isInPadovan(int x)
 {
     int i = 0;
@@ -125,7 +143,7 @@ void game_over()
 }
 
 // ********************************************************************************************************************************************************************
-// INVIO PER CONTIUARE
+// INVIO PER CONTINUARE
 // ********************************************************************************************************************************************************************
 void invioPerContinuare()
 { // funzione che serve per fermare il gioco e premere invio per continuare
@@ -144,10 +162,15 @@ void invioPerContinuare()
 // SBLOCCO TRUCCHI
 // ********************************************************************************************************************************************************************
 // codice Konami: w w s s a d a d b a [Spazio]
+/**
+ *    @brief Sblocca i trucchi se viene inserito il codice Konami
+ *
+ *    @retval true se vengono sbloccati i trucchi, @retval false se non vengono sbloccati 
+ */
 bool sbloccoTrucchi()
 {
     // definizione del codice supponendo che la prima lettera sia già inserita
-    char lettere[10] = {'w', 's', 's', 'a', 'd', 'a', 'd', 'b', 'a', ' '};
+    char lettere[10] = {'w', 's', 's', 'a', 'd', 'a', 'd', 'b', 'a', ' '}; //la prima w è la condizione d'entrata per la funzione
     char input[10];
     // controllo per ogni lettera inserita se appartiene alla sequenza ed è nel posto giusto
 
@@ -170,7 +193,7 @@ bool sbloccoTrucchi()
 }
 
 // ********************************************************************************************************************************************************************
-// *******************************************************************MENU PRINCIPALE**********************************************************************************
+// MENU PRINCIPALE
 // ********************************************************************************************************************************************************************
 
 // funzione che crea il menu principale e gestisce l'input della selezione -> funzione ricorsiva :)
@@ -238,7 +261,9 @@ char menuPrincipale(bool sblocco) // sblocco = se vero viene visualizzata l'opzi
 
     return scelta[0];
 }
-//*************************************MENU DEL VILLAGGIO*******************************************
+// ********************************************************************************************************************************************************************
+// MENU DEL VILLAGGIO
+// ********************************************************************************************************************************************************************
 short int menuVillaggio()
 {
     system("cls || clear"); // cancella tutta la console per poi stampare tutto il menu
@@ -272,7 +297,9 @@ short int menuVillaggio()
 
     return opzione;
 }
-//*************************************INVENTARIO*******************************************
+// ********************************************************************************************************************************************************************
+// INVENTARIO
+// ********************************************************************************************************************************************************************
 void visualizzaInventario(struct Partita *partita)
 {
     system("cls || clear"); // cancella tutta la console per poi stampare tutto il menu
@@ -343,8 +370,19 @@ void visualizzaInventario(struct Partita *partita)
     } while (scelta != 2);
 }
 
-//*************************************CREA STANZE*******************************************
-
+// ********************************************************************************************************************************************************************
+// CREA STANZE
+// ********************************************************************************************************************************************************************
+/**
+ *    @brief Crea le stanze del dungeon selezionato proceduralmente
+ * 
+ *    Genera proceduralmente il contenuto delle stanze del dungeon rispettando le specifiche
+ *
+ *    @param *partita dati della partita corrente da modificare
+ *    @param tipo indica la missione selezionata per generare le stanze
+ *
+ *     
+ */
 void creaStanze(struct Partita *partita, int tipo)
 {
     int i = 0;
@@ -465,7 +503,9 @@ void creaStanze(struct Partita *partita, int tipo)
     }
 }
 
-//*************************************NUOVA PARTITA*******************************************
+// ********************************************************************************************************************************************************************
+// NUOVA PARTITA
+// ********************************************************************************************************************************************************************
 struct Partita nuovaPartita()
 {
     // inizializzazione della partita
@@ -489,7 +529,9 @@ struct Partita nuovaPartita()
     return partita;
 }
 
-//*********************************MENU SELEZIONE MISSIONE*********************************************
+// ********************************************************************************************************************************************************************
+// MENU SELEZIONE MISSIONE
+// ********************************************************************************************************************************************************************
 short int menuSelezioneMissione(struct Partita *partita)
 {                           // menu per selezionare la missione
     system("cls || clear"); // cancella tutta la console per poi stampare tutto il menu
@@ -571,7 +613,9 @@ short int menuSelezioneMissione(struct Partita *partita)
     }
 }
 
-//*********************************MENU MISSIONE******************************************/
+// ********************************************************************************************************************************************************************
+// MENU MISSIONE
+// ********************************************************************************************************************************************************************
 
 short int menuMissione(short int selezioneMissione, struct Partita *partita)
 {
@@ -685,9 +729,9 @@ short int menuMissione(short int selezioneMissione, struct Partita *partita)
     return selezione;
 }
 
-/****************************************************MENU NEGOZIO*****************************************************************/
-
-// funzione per visualizzare il negozio
+// ********************************************************************************************************************************************************************
+// MENU NEGOZIO
+// ********************************************************************************************************************************************************************
 void menuNegozio(struct Partita *partita)
 {
     system("cls || clear"); // cancella tutta la console per poi stampare tutto il menu
@@ -778,14 +822,18 @@ void menuNegozio(struct Partita *partita)
     } while (true);
 }
 
-/****************************************************SALVA PARTITA*****************************************************************/
+// ********************************************************************************************************************************************************************
+// SALVA PARTITA
+// ********************************************************************************************************************************************************************
 void salvaPartita(struct Partita p, list_t *salvataggi)
 {
     l_push_back(salvataggi, p); // salva (creando il nodo automaticamente) nella lista dei salvataggi
     return;
 }
 
-/****************************************************CARICA PARTITA**************************************************************** */
+// ********************************************************************************************************************************************************************
+// CARICA PARTITA
+// ********************************************************************************************************************************************************************
 bool caricaPartita(struct Partita *p, list_t *salvataggi, int index)
 {
     struct Partita *partitaTrovata = pull(salvataggi, index);
@@ -797,7 +845,9 @@ bool caricaPartita(struct Partita *p, list_t *salvataggi, int index)
     return true;
 }
 
-/*****************************************************MENU CARICA PARTITA************************************************************* */
+// ********************************************************************************************************************************************************************
+// MENU CARICA PARTITA
+// ********************************************************************************************************************************************************************
 bool menuSalvataggi(list_t **salvataggi, struct Partita *partita)
 {
     while (true)
@@ -879,7 +929,9 @@ bool menuSalvataggi(list_t **salvataggi, struct Partita *partita)
     }
 }
 
-/***********************************************MENU STANZA*************************************************** */
+// ********************************************************************************************************************************************************************
+// MENU STANZA
+// ********************************************************************************************************************************************************************
 bool menuStanza(struct Partita *partita, short int selezioneMissione) // ritorna true se il giocatore muore
 {
     system("cls || clear");
@@ -1273,8 +1325,9 @@ bool menuStanza(struct Partita *partita, short int selezioneMissione) // ritorna
     return true;
 }
 
-/**********************************************************MISSIONE FINALE***************************************************************** */
-
+// ********************************************************************************************************************************************************************
+// MISSIONE FINALE
+// ********************************************************************************************************************************************************************
 bool missione_finale()
 {
     // scudo=sasso , magia=carta , spada=forbici
@@ -1382,7 +1435,9 @@ bool missione_finale()
     return false; // L'eroe perde
 }
 
-//**************************************************MENU TRUCCHI******************************************** */
+// ********************************************************************************************************************************************************************
+// MENU TRUCCHI
+// ********************************************************************************************************************************************************************
 
 void menuTrucchi(list_t *salvataggi)
 {
@@ -1477,7 +1532,6 @@ void menuTrucchi(list_t *salvataggi)
                 {
                     printf("La vita del giocatore è stata impostata a %d\n\n", vitaN);
                     partita->giocatore.vita = vitaN;
-                    
                 }
             } while (vitaN <= 0 || vitaN > 20 || risScan != 1);
             break;
@@ -1496,5 +1550,3 @@ void menuTrucchi(list_t *salvataggi)
         }
     } while (!uscita);
 }
-
-
