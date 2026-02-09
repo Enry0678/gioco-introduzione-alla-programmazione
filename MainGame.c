@@ -1,3 +1,12 @@
+/**
+    @file MainGame.c
+    @brief File contenente la logica principale di gioco
+
+    Questo file contiene il ciclo di gioco principale dove viene definita la logica che collega tutte le funzioni del gioco.
+
+    @author Enrico Ghezzo (911190) | Samuele Ferro (911268) | Matteo Lombardi (912616) 
+
+*/
 //*****************************************LIBRERIE**********************************************
 #include <stdio.h>
 #include <stdbool.h>
@@ -11,7 +20,7 @@ int main(void)
 {
 
     // VARIABILI
-    srand(time(0));
+    srand(time(0)); 
     bool uscitaMenuVillaggio = false;
     list_t *salvataggi = NULL;
 

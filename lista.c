@@ -1,3 +1,12 @@
+/**
+    @file lista.c
+    @brief File che gestisce la logica della lista dei salvataggi
+
+    Questo file contiene tutte le funzioni che vengono usate per operare con la lista dei salvataggi
+
+    @author Enrico Ghezzo (911190) | Samuele Ferro (911268) | Matteo Lombardi (912616) 
+
+*/
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>

@@ -1,3 +1,12 @@
+/**
+    @file funzioni.c
+    @brief File contenente la logica delle funzioni del gioco
+
+    Questo file contiene tutte le funzioni che permettono al gioco di funzionare.
+
+    @author Enrico Ghezzo (911190) | Samuele Ferro (911268) | Matteo Lombardi (912616) 
+
+*/
 // ********************************************************************************************************************************************************************
 // SEZIONE LIBRERIE
 // ********************************************************************************************************************************************************************
@@ -108,7 +117,7 @@ void victory()
     system("cls || clear");
     printf("\n\n" GREEN BOLD);
 
-    // Scritta VICTORY
+    // Scritta VICTORY generata su https://patorjk.com/software/taag/#p=display&f=Big+Money-ne&t=VICTORY&x=none&v=4&h=4&w=80&we=false
     printf(" /$$    /$$ /$$$$$$  /$$$$$$  /$$$$$$$$ /$$$$$$  /$$$$$$$  /$$     /$$\n");
     printf("| $$   | $$|_  $$_/ /$$__  $$|__  $$__//$$__  $$| $$__  $$|  $$   /$$/\n");
     printf("| $$   | $$  | $$  | $$  \\__/   | $$  | $$  \\ $$| $$  \\ $$ \\  $$ /$$/ \n");
@@ -128,7 +137,7 @@ void game_over()
     system("cls || clear");
     printf("\n\n" RED BOLD);
 
-    // Scritta GAME OVER
+    // Scritta GAME OVER generata su https://patorjk.com/software/taag/#p=display&f=S+Blood&t=GAME+OVER&x=none&v=4&h=4&w=80&we=false
     printf(" @@@@@@@@   @@@@@@   @@@@@@@@@@   @@@@@@@@      @@@@@@   @@@  @@@  @@@@@@@@  @@@@@@@   \n");
     printf("@@@@@@@@@  @@@@@@@@  @@@@@@@@@@@  @@@@@@@@     @@@@@@@@  @@@  @@@  @@@@@@@@  @@@@@@@@  \n");
     printf("!@@        @@!  @@@  @@! @@! @@!  @@!          @@!  @@@  @@!  @@@  @@!       @@!  @@@  \n");

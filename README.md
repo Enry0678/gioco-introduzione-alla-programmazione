@@ -1,1 +1,0 @@
-# gioco-introduzione-alla-programmazione
