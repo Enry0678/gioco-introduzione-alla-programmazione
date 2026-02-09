@@ -18,7 +18,6 @@
 #include <string.h>
 #include <time.h>
 
-struct Node;
 /** @typedef list_t
  * @brief Alias per la struttura dati Node per semplificare il codice.
  * 
